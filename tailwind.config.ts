@@ -35,6 +35,26 @@ const config: Config = {
       maxWidth: {
         container: '1200px',
       },
+      boxShadow: {
+        xs: '0 1px 2px 0 rgb(0 0 0 / 0.05)',
+      },
+      backdropBlur: {
+        xs: '2px',
+      },
+      keyframes: {
+        'slide-in-right': {
+          '0%': { transform: 'translateX(100%)' },
+          '100%': { transform: 'translateX(0)' },
+        },
+        'fade-in': {
+          '0%': { opacity: '0' },
+          '100%': { opacity: '1' },
+        },
+      },
+      animation: {
+        'slide-in-right': 'slide-in-right 0.2s ease-out forwards',
+        'fade-in': 'fade-in 0.2s ease-out forwards',
+      },
     },
   },
   plugins: [],
