@@ -9,18 +9,24 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
+        'brand-primary': '#1E2B4B',
+        'brand-accent': '#1AA99E',
+        'brand-accent-strong': '#087F79',
+        'accent-surface': '#E7F7F5',
         brand: {
           primary: '#1E2B4B',
           accent: '#1AA99E',
           'accent-strong': '#087F79',
           'accent-surface': '#E7F7F5',
         },
+        background: '#FFFFFF',
         surface: {
           DEFAULT: '#F7F8FA',
           white: '#FFFFFF',
         },
         'text-primary': '#202938',
         'text-secondary': '#596575',
+        border: '#DCE3EB',
         'border-subtle': '#DCE3EB',
       },
       fontFamily: {
@@ -35,4 +41,3 @@ const config: Config = {
 };
 
 export default config;
-

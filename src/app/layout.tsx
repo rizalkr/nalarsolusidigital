@@ -16,7 +16,7 @@ export const metadata: Metadata = {
     template: `%s | ${siteConfig.name}`,
   },
   description: siteConfig.description,
-  // Only set metadataBase if a valid siteUrl is explicitly configured
+  // Only set metadataBase when siteUrl is explicitly configured and validated
   ...(siteConfig.isSiteUrlConfigured
     ? { metadataBase: new URL(siteConfig.siteUrl) }
     : {}),
@@ -32,10 +32,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="id" className={plusJakartaSans.variable}>
-      <body className="min-h-screen bg-white text-text-primary antialiased selection:bg-brand-accent-surface selection:text-brand-accent-strong">
+      <body className="min-h-screen bg-background text-text-primary antialiased selection:bg-accent-surface selection:text-brand-accent-strong">
         {children}
       </body>
     </html>
   );
 }
-
