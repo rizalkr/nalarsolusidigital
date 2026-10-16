@@ -1,0 +1,35 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --color-brand-primary: #1E2B4B;
+  --color-brand-accent: #1AA99E;
+  --color-brand-accent-strong: #087F79;
+  --color-background: #FFFFFF;
+  --color-surface: #F7F8FA;
+  --color-text-primary: #202938;
+  --color-text-secondary: #596575;
+  --color-border: #DCE3EB;
+  --color-accent-surface: #E7F7F5;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 5rem;
+}
+
+body {
+  color: var(--color-text-primary);
+  background-color: var(--color-background);
+  font-family: var(--font-plus-jakarta-sans), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Accessible focus ring defaults */
+*:focus-visible {
+  outline: 2px solid var(--color-brand-accent);
+  outline-offset: 2px;
+}
+
