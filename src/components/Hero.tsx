@@ -1,15 +1,13 @@
 import Link from 'next/link';
-import Image from 'next/image';
 import { siteConfig } from '@/config/site';
 import { buildWhatsAppUrl } from '@/lib/whatsapp';
 import { ArrowRight } from 'lucide-react';
+import { HeroVisual } from './HeroVisual';
 
 export function Hero() {
   const whatsappUrl = buildWhatsAppUrl({
     message: siteConfig.contact.whatsapp.defaultMessages.consultation,
   });
-
-  const [demoKonveksi, demoRental] = siteConfig.demos;
 
   return (
     <section
@@ -83,89 +81,12 @@ export function Hero() {
             </div>
           </div>
 
-          {/* Right Column: Fanned playing card preview deck for Ruang Konveksi and Rental Mobil */}
+          {/* Right Column: Conceptual digital ecosystem visual */}
           <div className="lg:col-span-5 w-full">
-            <div className="relative mx-auto max-w-lg lg:max-w-none pt-2 pb-2">
-              {/* Card 1: Ruang Konveksi Preview */}
-              {demoKonveksi && (
-                <Link
-                  href="#contoh-solusi"
-                  aria-label={`Lihat rincian solusi ${demoKonveksi.name}`}
-                  className="relative block bg-white rounded-xl border border-border shadow-sm overflow-hidden z-20 transition-all duration-300 ease-out rotate-0 md:-rotate-2 md:translate-x-0 md:translate-y-0 hover:rotate-0 hover:scale-[1.02] hover:z-30 hover:shadow-xl focus-visible:rotate-0 focus-visible:scale-[1.02] focus-visible:z-30 focus-visible:shadow-xl focus-visible:outline-brand-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 group"
-                >
-                  <div className="p-3 sm:p-4 bg-surface border-b border-border flex items-center justify-between">
-                    <div>
-                      <span className="text-[11px] font-bold uppercase tracking-wider text-brand-accent-strong bg-accent-surface px-2 py-0.5 rounded border border-brand-accent/20 mr-2">
-                        {demoKonveksi.badge}
-                      </span>
-                      <span className="text-sm font-bold text-brand-primary group-hover:text-brand-accent-strong transition-colors">
-                        {demoKonveksi.name}
-                      </span>
-                    </div>
-                    <span className="text-xs text-text-secondary hidden sm:inline">
-                      Katalog & Estimasi
-                    </span>
-                  </div>
-                  <div className="relative aspect-[16/10] w-full bg-surface">
-                    <Image
-                      src={demoKonveksi.previewImage}
-                      alt={`Preview ${demoKonveksi.name}`}
-                      fill
-                      priority
-                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 45vw, 400px"
-                      className="object-cover"
-                    />
-                  </div>
-                </Link>
-              )}
-
-              {/* Card 2: Rental Mobil Preview */}
-              {demoRental && (
-                <Link
-                  href="#contoh-solusi"
-                  aria-label={`Lihat rincian solusi ${demoRental.name}`}
-                  className="relative block bg-white rounded-xl border border-border shadow-sm overflow-hidden z-10 transition-all duration-300 ease-out -translate-y-3.5 rotate-0 md:translate-x-6 md:-translate-y-4 md:rotate-3 scale-[0.98] hover:rotate-0 hover:scale-[1.02] hover:z-30 hover:shadow-xl focus-visible:rotate-0 focus-visible:scale-[1.02] focus-visible:z-30 focus-visible:shadow-xl focus-visible:outline-brand-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 group"
-                >
-                  <div className="p-3 sm:p-4 bg-surface border-b border-border flex items-center justify-between">
-                    <div>
-                      <span className="text-[11px] font-bold uppercase tracking-wider text-brand-accent-strong bg-accent-surface px-2 py-0.5 rounded border border-brand-accent/20 mr-2">
-                        {demoRental.badge}
-                      </span>
-                      <span className="text-sm font-bold text-brand-primary group-hover:text-brand-accent-strong transition-colors">
-                        {demoRental.name}
-                      </span>
-                    </div>
-                    <span className="text-xs text-text-secondary hidden sm:inline">
-                      Profil & Armada
-                    </span>
-                  </div>
-                  <div className="relative aspect-[16/10] w-full bg-surface">
-                    <Image
-                      src={demoRental.previewImage}
-                      alt={`Preview ${demoRental.name}`}
-                      fill
-                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 45vw, 400px"
-                      className="object-cover"
-                    />
-                  </div>
-                </Link>
-              )}
-
-              {/* Subtle caption cue below cards linking to solutions section */}
-              <div className="mt-4 text-center">
-                <Link
-                  href="#contoh-solusi"
-                  className="inline-flex items-center text-xs text-text-secondary hover:text-brand-accent-strong transition-colors focus-visible:outline-brand-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 rounded"
-                >
-                  <span>Klik kartu untuk melihat rincian solusi</span>
-                  <ArrowRight className="w-3.5 h-3.5 ml-1.5" aria-hidden="true" />
-                </Link>
-              </div>
-            </div>
+            <HeroVisual />
           </div>
         </div>
       </div>
     </section>
   );
 }
-

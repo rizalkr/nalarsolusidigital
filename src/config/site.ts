@@ -186,12 +186,12 @@ export const siteConfig: SiteConfig = {
   },
   hero: {
     eyebrow: 'SOLUSI DIGITAL UNTUK USAHA LOKAL',
-    headline: 'Website yang Rapi, Profesional, dan Mudah Dipakai Pelanggan.',
+    headline: 'Setiap Usaha Punya Kebutuhan yang Berbeda.',
     description:
-      'Nalar membantu usaha lokal membangun website company profile, katalog produk atau armada online, dan alur pemesanan yang disesuaikan dengan kebutuhan bisnis.',
+      'Kami membantu usaha lokal menemukan dan mengembangkan solusi digital yang sesuai dengan kebutuhan bisnis, mulai dari website, katalog online, email bisnis, hingga sistem administrasi.',
     tagline: 'Ceritakan usaha Anda, kami bantu carikan solusi yang paling masuk akal.',
     primaryCta: 'Konsultasi Gratis',
-    secondaryCta: 'Lihat Contoh Solusi',
+    secondaryCta: 'Lihat Demo',
   },
   navigation: [
     { label: 'Beranda', href: '#beranda' },

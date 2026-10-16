@@ -44,100 +44,50 @@ describe('Hero Component', () => {
     expect(ctaIndex).toBeGreaterThan(taglineIndex);
   });
 
-  it('renders primary CTA (Konsultasi Gratis) and secondary CTA (Lihat Contoh Solusi)', () => {
+  it('renders primary CTA (Konsultasi Gratis) and secondary CTA (Lihat Demo)', () => {
     render(<Hero />);
     const primaryCta = screen.getByRole('link', { name: new RegExp(siteConfig.hero.primaryCta, 'i') });
     expect(primaryCta).toBeInTheDocument();
 
     const secondaryCta = screen.getByRole('link', { name: new RegExp(siteConfig.hero.secondaryCta, 'i') });
     expect(secondaryCta).toBeInTheDocument();
+    expect(secondaryCta).toHaveTextContent('Lihat Demo');
     expect(secondaryCta).toHaveAttribute('href', '#contoh-solusi');
   });
 
-  it('renders right column preview cards for Ruang Konveksi and Rental Mobil with badges', () => {
+  it('renders the three informative floating cards in the hero visual', () => {
     render(<Hero />);
-    expect(screen.getByText('Ruang Konveksi')).toBeInTheDocument();
-    expect(screen.getByText('Rental Mobil')).toBeInTheDocument();
+    expect(screen.getByText('Katalog Produk')).toBeInTheDocument();
+    expect(screen.getByText('Produk tersusun rapi dan mudah dijelajahi.')).toBeInTheDocument();
 
-    const badges = screen.getAllByText('DEMO INTERAKTIF');
-    expect(badges.length).toBeGreaterThanOrEqual(2);
+    expect(screen.getByText('Alur Pemesanan')).toBeInTheDocument();
+    expect(screen.getByText('Permintaan pelanggan lebih terstruktur.')).toBeInTheDocument();
 
-    expect(screen.getByAltText(/Preview Ruang Konveksi/i)).toBeInTheDocument();
-    expect(screen.getByAltText(/Preview Rental Mobil/i)).toBeInTheDocument();
+    expect(screen.getByText('Email Bisnis')).toBeInTheDocument();
+    expect(screen.getByText('Komunikasi dengan identitas usaha.')).toBeInTheDocument();
   });
 
-  it('wraps preview cards into accessible links pointing to #contoh-solusi with descriptive aria-labels', () => {
-    render(<Hero />);
-    const konveksiCard = screen.getByRole('link', {
-      name: /Lihat rincian solusi Ruang Konveksi/i,
-    });
-    expect(konveksiCard).toBeInTheDocument();
-    expect(konveksiCard).toHaveAttribute('href', '#contoh-solusi');
-
-    const rentalCard = screen.getByRole('link', {
-      name: /Lihat rincian solusi Rental Mobil/i,
-    });
-    expect(rentalCard).toBeInTheDocument();
-    expect(rentalCard).toHaveAttribute('href', '#contoh-solusi');
+  it('renders HeroVisual with aria-hidden="true" on the decorative browser mockup wrapper', () => {
+    const { container } = render(<Hero />);
+    const decorativeEl = container.querySelector('[aria-hidden="true"]');
+    expect(decorativeEl).toBeInTheDocument();
   });
 
-  it('applies fanned playing card layout, mobile anti-overflow constraints, and hover elevation classes', () => {
+  it('does not render any demo screenshot images in the hero section', () => {
     render(<Hero />);
-    const konveksiCard = screen.getByRole('link', {
-      name: /Lihat rincian solusi Ruang Konveksi/i,
-    });
-    const rentalCard = screen.getByRole('link', {
-      name: /Lihat rincian solusi Rental Mobil/i,
-    });
-
-    // Card 1 classes: desktop angled -rotate-2, z-20, transition-all, hover/focus elevation
-    expect(konveksiCard).toHaveClass('md:-rotate-2');
-    expect(konveksiCard).toHaveClass('z-20');
-    expect(konveksiCard).toHaveClass('transition-all');
-    expect(konveksiCard).toHaveClass('duration-300');
-    expect(konveksiCard).toHaveClass('ease-out');
-    expect(konveksiCard).toHaveClass('hover:rotate-0');
-    expect(konveksiCard).toHaveClass('hover:scale-[1.02]');
-    expect(konveksiCard).toHaveClass('hover:z-30');
-    expect(konveksiCard).toHaveClass('hover:shadow-xl');
-    expect(konveksiCard).toHaveClass('focus-visible:rotate-0');
-    expect(konveksiCard).toHaveClass('focus-visible:scale-[1.02]');
-    expect(konveksiCard).toHaveClass('focus-visible:z-30');
-    expect(konveksiCard).toHaveClass('focus-visible:outline-brand-accent');
-
-    // Card 2 classes: mobile strictly vertical offset -translate-y-3.5 with rotate-0, desktop fanned out behind
-    expect(rentalCard).toHaveClass('-translate-y-3.5');
-    expect(rentalCard).toHaveClass('rotate-0');
-    expect(rentalCard).toHaveClass('md:translate-x-6');
-    expect(rentalCard).toHaveClass('md:-translate-y-4');
-    expect(rentalCard).toHaveClass('md:rotate-3');
-    expect(rentalCard).toHaveClass('scale-[0.98]');
-    expect(rentalCard).toHaveClass('z-10');
-    expect(rentalCard).toHaveClass('hover:rotate-0');
-    expect(rentalCard).toHaveClass('hover:scale-[1.02]');
-    expect(rentalCard).toHaveClass('hover:z-30');
-    expect(rentalCard).toHaveClass('hover:shadow-xl');
-    expect(rentalCard).toHaveClass('focus-visible:rotate-0');
-    expect(rentalCard).toHaveClass('focus-visible:scale-[1.02]');
-    expect(rentalCard).toHaveClass('focus-visible:z-30');
-    expect(rentalCard).toHaveClass('focus-visible:outline-brand-accent');
+    expect(screen.queryByAltText(/Preview Ruang Konveksi/i)).not.toBeInTheDocument();
+    expect(screen.queryByAltText(/Preview Rental Mobil/i)).not.toBeInTheDocument();
   });
 
-  it('renders subtle caption cue below cards linking to #contoh-solusi', () => {
+  it('does not render business-specific names in the hero visual', () => {
     render(<Hero />);
-    const captionLink = screen.getByRole('link', {
-      name: /Klik kartu untuk melihat rincian solusi/i,
-    });
-    expect(captionLink).toBeInTheDocument();
-    expect(captionLink).toHaveAttribute('href', '#contoh-solusi');
-    expect(captionLink).toHaveClass('focus-visible:outline-brand-accent');
-  });
-
-  it('retains priority image loading on Card 1 for optimal LCP', () => {
-    render(<Hero />);
-    const konveksiImg = screen.getByAltText(/Preview Ruang Konveksi/i);
-    // In next/image, priority images or next/image mock keep appropriate loading attributes
-    expect(konveksiImg).toBeInTheDocument();
+    // The specific demo names should not appear in the hero's right-column visual
+    // (they belong in DemoShowcase)
+    const links = screen.getAllByRole('link');
+    // Only the CTA links should be present, not card links to #contoh-solusi with demo names
+    const demoNameLinks = links.filter(l =>
+      l.getAttribute('aria-label')?.match(/Ruang Konveksi|Rental Mobil/)
+    );
+    expect(demoNameLinks).toHaveLength(0);
   });
 });
-

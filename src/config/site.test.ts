@@ -12,17 +12,17 @@ describe('siteConfig', () => {
     );
   });
 
-  it('contains the mandatory hero copywriting per PRD Section 8.2', () => {
+  it('contains the mandatory hero copywriting per latest specifications', () => {
     expect(siteConfig.hero.eyebrow).toBe('SOLUSI DIGITAL UNTUK USAHA LOKAL');
     expect(siteConfig.hero.headline).toBe(
-      'Website yang Rapi, Profesional, dan Mudah Dipakai Pelanggan.'
+      'Setiap Usaha Punya Kebutuhan yang Berbeda.'
     );
     expect(siteConfig.hero.description).toBe(
-      'Nalar membantu usaha lokal membangun website company profile, katalog produk atau armada online, dan alur pemesanan yang disesuaikan dengan kebutuhan bisnis.'
+      'Kami membantu usaha lokal menemukan dan mengembangkan solusi digital yang sesuai dengan kebutuhan bisnis, mulai dari website, katalog online, email bisnis, hingga sistem administrasi.'
     );
     expect(siteConfig.hero.tagline).toBe(siteConfig.tagline);
     expect(siteConfig.hero.primaryCta).toBe('Konsultasi Gratis');
-    expect(siteConfig.hero.secondaryCta).toBe('Lihat Contoh Solusi');
+    expect(siteConfig.hero.secondaryCta).toBe('Lihat Demo');
   });
 
   it('has all 5 required navigation items with proper anchor targets', () => {

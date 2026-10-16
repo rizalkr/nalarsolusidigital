@@ -235,27 +235,5 @@ describe('HomePage (Full Narrative Composition)', () => {
     });
   });
 
-  it('renders Hero fanned preview cards linking to #contoh-solusi with descriptive labels', () => {
-    render(<HomePage />);
-    const heroSection = document.getElementById('beranda');
-    expect(heroSection).toBeInTheDocument();
-
-    const konveksiCardLink = screen.getByRole('link', {
-      name: /Lihat rincian solusi Ruang Konveksi/i,
-    });
-    expect(konveksiCardLink).toBeInTheDocument();
-    expect(konveksiCardLink).toHaveAttribute('href', '#contoh-solusi');
-
-    const rentalCardLink = screen.getByRole('link', {
-      name: /Lihat rincian solusi Rental Mobil/i,
-    });
-    expect(rentalCardLink).toBeInTheDocument();
-    expect(rentalCardLink).toHaveAttribute('href', '#contoh-solusi');
-
-    const cueLink = screen.getByRole('link', {
-      name: /Klik kartu untuk melihat rincian solusi/i,
-    });
-    expect(cueLink).toBeInTheDocument();
-    expect(cueLink).toHaveAttribute('href', '#contoh-solusi');
-  });
 });
+
