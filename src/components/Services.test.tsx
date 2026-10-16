@@ -11,21 +11,23 @@ describe('Services Component', () => {
     expect(section).toHaveClass('md:scroll-mt-20');
   });
 
-  it('renders section heading (h2) and description', () => {
+  it('renders section badge, heading (h2), and description', () => {
     render(<Services />);
+    expect(screen.getByText('AREA SOLUSI')).toBeInTheDocument();
     const heading = screen.getByRole('heading', { level: 2 });
     expect(heading).toHaveTextContent('Solusi Digital Sesuai Kebutuhan Usaha Anda');
     expect(
-      screen.getByText(/Setiap usaha memiliki kebutuhan yang berbeda/i)
+      screen.getByText(/Mulai dari memperkuat kehadiran online hingga merapikan proses operasional/i)
     ).toBeInTheDocument();
   });
 
-  it('renders all 3 service cards with h3 headings', () => {
+  it('renders all 4 solution area cards with h3 headings', () => {
     render(<Services />);
     const cards = [
-      'Website Company Profile',
-      'Katalog Produk atau Armada',
-      'Alur Pemesanan',
+      'Kehadiran Digital',
+      'Informasi Produk dan Layanan',
+      'Proses Pemesanan dan Administrasi',
+      'Identitas dan Infrastruktur Digital',
     ];
 
     cards.forEach((title) => {
@@ -34,26 +36,33 @@ describe('Services Component', () => {
     });
   });
 
-  it('renders capabilities for each service card', () => {
+  it('renders examples (Contoh Kebutuhan) for each card', () => {
     render(<Services />);
 
-    // Check Company Profile capabilities
-    expect(screen.getByText('Profil bisnis')).toBeInTheDocument();
-    expect(screen.getByText('Daftar layanan')).toBeInTheDocument();
+    const labels = screen.getAllByText('Contoh Kebutuhan:');
+    expect(labels).toHaveLength(4);
 
-    // Check Catalog capabilities
-    expect(screen.getByText('Katalog produk')).toBeInTheDocument();
-    expect(screen.getByText('Katalog kendaraan')).toBeInTheDocument();
+    // Check Kehadiran Digital examples
+    expect(screen.getByText('Website profil perusahaan.')).toBeInTheDocument();
+    expect(screen.getByText('Landing page untuk layanan atau produk.')).toBeInTheDocument();
 
-    // Check Order Flow capabilities
-    expect(screen.getByText('Formulir permintaan')).toBeInTheDocument();
-    expect(screen.getByText('Ringkasan pesanan')).toBeInTheDocument();
+    // Check Informasi Produk dan Layanan examples
+    expect(screen.getByText('Katalog produk atau armada.')).toBeInTheDocument();
+    expect(screen.getByText('Galeri gambar dan informasi spesifikasi.')).toBeInTheDocument();
+
+    // Check Proses Pemesanan dan Administrasi examples
+    expect(screen.getByText('Formulir permintaan atau pemesanan.')).toBeInTheDocument();
+    expect(screen.getByText('Pengumpulan informasi pelanggan secara terstruktur.')).toBeInTheDocument();
+
+    // Check Identitas dan Infrastruktur Digital examples
+    expect(screen.getByText('Email dengan domain perusahaan.')).toBeInTheDocument();
+    expect(screen.getByText('Penggunaan dan pengaturan domain bisnis.')).toBeInTheDocument();
+    expect(screen.getByText('Migrasi website ke HTTPS.')).toBeInTheDocument();
   });
 
-  it('ensures order flow indicates flexible non-exclusive channel integration', () => {
-    render(<Services />);
-    expect(
-      screen.getByText(/Dapat diintegrasikan ke WhatsApp, formulir terstruktur, atau alur kerja operasional lain/i)
-    ).toBeInTheDocument();
+  it('uses a 2-column grid layout on medium screens and above', () => {
+    const { container } = render(<Services />);
+    const grid = container.querySelector('.grid-cols-1.md\\:grid-cols-2');
+    expect(grid).toBeInTheDocument();
   });
 });

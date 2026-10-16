@@ -100,8 +100,8 @@ describe('HomePage (Full Narrative Composition)', () => {
     render(<HomePage />);
 
     const h3Headings = screen.getAllByRole('heading', { level: 3 });
-    // Services (3) + Demos (2) + HowItWorks (3) + Approach (3) = 11 h3 headings
-    expect(h3Headings).toHaveLength(11);
+    // Services (4) + Demos (2) + HowItWorks (3) + Approach (3) = 12 h3 headings
+    expect(h3Headings).toHaveLength(12);
 
     const h3Texts = h3Headings.map((h) => h.textContent);
     // Services

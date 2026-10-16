@@ -56,30 +56,45 @@ describe('siteConfig', () => {
     expect(siteConfig.logo.portrait.alt).toBe('Nalar Solusi Digital');
   });
 
-  it('configures 3 core services with PRD verbatim descriptions', () => {
-    expect(siteConfig.services).toHaveLength(3);
+  it('configures servicesSection and 4 solution areas', () => {
+    expect(siteConfig.servicesSection.badge).toBe('AREA SOLUSI');
+    expect(siteConfig.servicesSection.title).toBe('Solusi Digital Sesuai Kebutuhan Usaha Anda');
+    expect(siteConfig.servicesSection.description).toContain(
+      'Mulai dari memperkuat kehadiran online hingga merapikan proses operasional'
+    );
+
+    expect(siteConfig.services).toHaveLength(4);
     const serviceMap = Object.fromEntries(
       siteConfig.services.map((s) => [s.id, s])
     );
 
-    expect(serviceMap['company-profile']).toBeDefined();
-    expect(serviceMap['company-profile'].description).toBe(
-      'Perkenalkan bisnis dan layanan Anda melalui website yang profesional, informatif, dan mudah diakses pelanggan.'
+    expect(serviceMap['kehadiran-digital']).toBeDefined();
+    expect(serviceMap['kehadiran-digital'].title).toBe('Kehadiran Digital');
+    expect(serviceMap['kehadiran-digital'].description).toBe(
+      'Membantu usaha membangun identitas dan memperkenalkan bisnisnya secara profesional melalui kanal digital.'
     );
-    expect(serviceMap['company-profile'].capabilities).toContain('Profil bisnis');
-    expect(serviceMap['company-profile'].capabilities).toContain('Daftar layanan');
+    expect(serviceMap['kehadiran-digital'].capabilities).toContain('Website profil perusahaan.');
 
-    expect(serviceMap['product-catalog']).toBeDefined();
-    expect(serviceMap['product-catalog'].description).toBe(
-      'Tampilkan produk atau armada secara online agar pelanggan lebih mudah melihat pilihan dan memperoleh informasi yang dibutuhkan.'
+    expect(serviceMap['informasi-produk-layanan']).toBeDefined();
+    expect(serviceMap['informasi-produk-layanan'].title).toBe('Informasi Produk dan Layanan');
+    expect(serviceMap['informasi-produk-layanan'].description).toBe(
+      'Membantu pelanggan menemukan, memahami, dan membandingkan produk atau layanan usaha dengan lebih mudah.'
     );
-    expect(serviceMap['product-catalog'].capabilities).toContain('Katalog produk');
+    expect(serviceMap['informasi-produk-layanan'].capabilities).toContain('Katalog produk atau armada.');
 
-    expect(serviceMap['order-flow']).toBeDefined();
-    expect(serviceMap['order-flow'].description).toBe(
-      'Bantu pelanggan melakukan pemesanan melalui proses yang lebih jelas dan sesuai dengan cara kerja bisnis Anda.'
+    expect(serviceMap['proses-pemesanan-administrasi']).toBeDefined();
+    expect(serviceMap['proses-pemesanan-administrasi'].title).toBe('Proses Pemesanan dan Administrasi');
+    expect(serviceMap['proses-pemesanan-administrasi'].description).toBe(
+      'Membantu menyederhanakan proses bisnis yang masih dilakukan secara manual atau kurang terstruktur.'
     );
-    expect(serviceMap['order-flow'].capabilities).toContain('Formulir permintaan');
+    expect(serviceMap['proses-pemesanan-administrasi'].capabilities).toContain('Formulir permintaan atau pemesanan.');
+
+    expect(serviceMap['identitas-infrastruktur-digital']).toBeDefined();
+    expect(serviceMap['identitas-infrastruktur-digital'].title).toBe('Identitas dan Infrastruktur Digital');
+    expect(serviceMap['identitas-infrastruktur-digital'].description).toBe(
+      'Membantu usaha membangun identitas digital dan menjaga infrastruktur online agar sesuai dengan kebutuhan bisnis.'
+    );
+    expect(serviceMap['identitas-infrastruktur-digital'].capabilities).toContain('Email dengan domain perusahaan.');
   });
 
   it('configures 2 interactive demos with proper badges and CTA labels', () => {

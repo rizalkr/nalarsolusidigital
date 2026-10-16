@@ -76,6 +76,11 @@ export interface SiteConfig {
     secondaryCta: string;
   };
   navigation: NavItem[];
+  servicesSection: {
+    badge: string;
+    title: string;
+    description: string;
+  };
   services: ServiceItem[];
   demoSection: {
     badge: string;
@@ -205,71 +210,55 @@ export const siteConfig: SiteConfig = {
     { label: 'Cara Kerja', href: '#cara-kerja' },
     { label: 'Tentang', href: '#tentang' },
   ],
+  servicesSection: {
+    badge: 'AREA SOLUSI',
+    title: 'Solusi Digital Sesuai Kebutuhan Usaha Anda',
+    description:
+      'Mulai dari memperkuat kehadiran online hingga merapikan proses operasional, kami membantu usaha Anda menemukan dan mengembangkan solusi digital yang relevan. Bentuk dan cakupan pengerjaannya disesuaikan dengan kebutuhan bisnis Anda.',
+  },
   services: [
     {
-      id: 'company-profile',
-      title: 'Website Company Profile',
+      id: 'kehadiran-digital',
+      title: 'Kehadiran Digital',
       description:
-        'Perkenalkan bisnis dan layanan Anda melalui website yang profesional, informatif, dan mudah diakses pelanggan.',
-      shortDescription:
-        'Profil bisnis yang rapi dan profesional untuk membangun kepercayaan pelanggan.',
+        'Membantu usaha membangun identitas dan memperkenalkan bisnisnya secara profesional melalui kanal digital.',
       capabilities: [
-        'Profil bisnis',
-        'Daftar layanan',
-        'Informasi kontak',
-        'Informasi lokasi jika tersedia',
-        'CTA konsultasi atau kontak',
-      ],
-      highlights: [
-        'Profil bisnis',
-        'Daftar layanan',
-        'Informasi kontak',
-        'Informasi lokasi jika tersedia',
-        'CTA konsultasi atau kontak',
+        'Website profil perusahaan.',
+        'Landing page untuk layanan atau produk.',
+        'Informasi bisnis, layanan, lokasi, dan kontak.',
       ],
     },
     {
-      id: 'product-catalog',
-      title: 'Katalog Produk atau Armada',
+      id: 'informasi-produk-layanan',
+      title: 'Informasi Produk dan Layanan',
       description:
-        'Tampilkan produk atau armada secara online agar pelanggan lebih mudah melihat pilihan dan memperoleh informasi yang dibutuhkan.',
-      shortDescription:
-        'Etalase digital terorganisir untuk memamerkan penawaran bisnis secara lengkap.',
+        'Membantu pelanggan menemukan, memahami, dan membandingkan produk atau layanan usaha dengan lebih mudah.',
       capabilities: [
-        'Katalog produk',
-        'Katalog kendaraan',
-        'Galeri gambar',
-        'Detail informasi',
-        'Navigasi menuju proses pemesanan',
-      ],
-      highlights: [
-        'Katalog produk',
-        'Katalog kendaraan',
-        'Galeri gambar',
-        'Detail informasi',
-        'Navigasi menuju proses pemesanan',
+        'Katalog produk atau armada.',
+        'Galeri gambar dan informasi spesifikasi.',
+        'Penyajian daftar layanan secara terstruktur.',
       ],
     },
     {
-      id: 'order-flow',
-      title: 'Alur Pemesanan',
+      id: 'proses-pemesanan-administrasi',
+      title: 'Proses Pemesanan dan Administrasi',
       description:
-        'Bantu pelanggan melakukan pemesanan melalui proses yang lebih jelas dan sesuai dengan cara kerja bisnis Anda.',
-      shortDescription:
-        'Sistem pemesanan yang disesuaikan dengan alur operasional dan kebutuhan usaha.',
+        'Membantu menyederhanakan proses bisnis yang masih dilakukan secara manual atau kurang terstruktur.',
       capabilities: [
-        'Formulir permintaan',
-        'Pemilihan produk atau layanan',
-        'Pengumpulan detail pesanan',
-        'Ringkasan pesanan',
-        'Integrasi dengan kanal komunikasi atau proses bisnis yang relevan',
+        'Formulir permintaan atau pemesanan.',
+        'Pengumpulan informasi pelanggan secara terstruktur.',
+        'Sistem administrasi berbasis web sesuai kebutuhan.',
       ],
-      highlights: [
-        'Formulir permintaan',
-        'Pemilihan produk atau layanan',
-        'Pengumpulan detail pesanan',
-        'Ringkasan pesanan',
-        'Integrasi dengan kanal komunikasi atau proses bisnis yang relevan',
+    },
+    {
+      id: 'identitas-infrastruktur-digital',
+      title: 'Identitas dan Infrastruktur Digital',
+      description:
+        'Membantu usaha membangun identitas digital dan menjaga infrastruktur online agar sesuai dengan kebutuhan bisnis.',
+      capabilities: [
+        'Email dengan domain perusahaan.',
+        'Penggunaan dan pengaturan domain bisnis.',
+        'Migrasi website ke HTTPS.',
       ],
     },
   ],
