@@ -77,6 +77,6 @@ describe('RootLayout and Metadata Configuration', () => {
     expect(bodyElement.props.className).toContain('min-h-screen');
     expect(bodyElement.props.className).toContain('bg-background');
     expect(bodyElement.props.className).toContain('text-text-primary');
-    expect(bodyElement.props.children).toBe(testChild);
+    expect(bodyElement.props.children).toContain(testChild);
   });
 });

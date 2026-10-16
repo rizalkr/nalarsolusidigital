@@ -2,6 +2,8 @@ import type { Metadata, Viewport } from 'next';
 import { Plus_Jakarta_Sans } from 'next/font/google';
 import './globals.css';
 import { siteConfig } from '@/config/site';
+import { SpeedInsights } from '@vercel/speed-insights/next';
+import { Analytics } from '@vercel/analytics/next';
 
 const plusJakartaSans = Plus_Jakarta_Sans({
   subsets: ['latin'],
@@ -68,6 +70,8 @@ export default function RootLayout({
     <html lang="id" className={plusJakartaSans.variable}>
       <body className="min-h-screen bg-background text-text-primary antialiased selection:bg-accent-surface selection:text-brand-accent-strong">
         {children}
+        <SpeedInsights/>
+        <Analytics/>
       </body>
     </html>
   );
