@@ -57,7 +57,7 @@ describe('Footer Component', () => {
       .mockReturnValue('https://wa.me/6281234567890?text=Halo%20Nalar%20Solusi%20Digital');
 
     render(<Footer />);
-    const waLink = screen.getByRole('link', { name: /WhatsApp Konsultasi/i });
+    const waLink = screen.getByRole('link', { name: /Konsultasi via WhatsApp/i });
     expect(waLink).toBeInTheDocument();
     expect(waLink).toHaveAttribute(
       'href',
@@ -69,11 +69,23 @@ describe('Footer Component', () => {
     spy.mockRestore();
   });
 
+  it('renders configured email contact channel with mailto scheme', () => {
+    render(<Footer />);
+    const emailLink = screen.getByRole('link', { name: 'nalarsolusidigital@gmail.com' });
+    expect(emailLink).toBeInTheDocument();
+    expect(emailLink).toHaveAttribute('href', 'mailto:nalarsolusidigital@gmail.com');
+  });
+
   it('displays fallback message when neither WhatsApp nor email is configured', () => {
-    const spy = vi.spyOn(whatsappModule, 'buildWhatsAppUrl').mockReturnValue(null);
+    const waSpy = vi.spyOn(whatsappModule, 'buildWhatsAppUrl').mockReturnValue(null);
+    const originalEmail = siteConfig.contact.email;
+    siteConfig.contact.email = null;
+
     render(<Footer />);
     expect(screen.getByText(/Saluran kontak sedang dipersiapkan/i)).toBeInTheDocument();
-    spy.mockRestore();
+
+    siteConfig.contact.email = originalEmail;
+    waSpy.mockRestore();
   });
 
   it('does not invent fake office addresses or social media accounts', () => {
@@ -91,6 +103,13 @@ describe('Footer Component', () => {
     const currentYear = new Date().getFullYear();
     const expectedText = siteConfig.footer.copyrightTemplate.replace('{year}', String(currentYear));
     expect(screen.getByText(expectedText)).toBeInTheDocument();
+  });
+
+  it('renders official brand tagline verbatim at the bottom right', () => {
+    render(<Footer />);
+    expect(
+      screen.getByText('Ceritakan usaha Anda, kami bantu carikan solusi yang paling masuk akal.')
+    ).toBeInTheDocument();
   });
 
   it('contains zero emoticons or emojis in the rendered markup', () => {

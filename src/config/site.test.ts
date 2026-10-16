@@ -118,28 +118,38 @@ describe('siteConfig', () => {
     expect(rental.features).toContain('Layanan rental');
   });
 
-  it('configures 3 steps for Cara Kerja per PRD Section 8.5', () => {
+  it('configures 3 steps for Cara Kerja per updated copywriting', () => {
     expect(siteConfig.howItWorks.steps).toHaveLength(3);
     expect(siteConfig.howItWorks.steps[0].title).toBe('Konsultasi');
+    expect(siteConfig.howItWorks.steps[0].description).toBe(
+      'Ceritakan jenis usaha, kendala yang dihadapi, dan hal yang ingin diperbaiki.'
+    );
     expect(siteConfig.howItWorks.steps[1].title).toBe('Menentukan Solusi');
-    expect(siteConfig.howItWorks.steps[2].title).toBe('Pengembangan');
+    expect(siteConfig.howItWorks.steps[1].description).toBe(
+      'Kami memetakan kebutuhan dan menyepakati bentuk solusi serta ruang lingkup pengerjaannya.'
+    );
+    expect(siteConfig.howItWorks.steps[2].title).toBe('Pengerjaan Solusi');
+    expect(siteConfig.howItWorks.steps[2].description).toBe(
+      'Solusi yang disepakati kami kerjakan, kemudian hasilnya ditinjau bersama Anda sebelum digunakan.'
+    );
   });
 
-  it('configures 3 guiding principles for Pendekatan Nalar per PRD Section 8.6', () => {
+  it('configures 3 guiding principles for Pendekatan Nalar per latest specifications', () => {
     expect(siteConfig.approach.principles).toHaveLength(3);
     const titles = siteConfig.approach.principles.map((p) => p.title);
     expect(titles).toEqual([
       'Pahami Kebutuhan',
       'Tentukan Prioritas',
-      'Bangun Sesuai Kesepakatan',
+      'Kerjakan Sesuai Kesepakatan',
     ]);
   });
 
-  it('configures closing CTA and footer templates per PRD', () => {
+  it('configures closing CTA, contact email, and footer templates', () => {
     expect(siteConfig.closingCta.title).toBe('Punya Rencana untuk Bisnis Anda?');
     expect(siteConfig.closingCta.ctaLabel).toBe('Konsultasi Gratis via WhatsApp');
+    expect(siteConfig.contact.email).toBe('nalarsolusidigital@gmail.com');
     expect(siteConfig.footer.description).toBe(
-      'Membantu usaha lokal memiliki website yang profesional dan sesuai kebutuhan bisnis.'
+      'Membantu usaha lokal menemukan dan mengembangkan solusi digital yang sesuai dengan kebutuhan bisnis.'
     );
   });
 });

@@ -32,11 +32,11 @@ describe('Approach Component', () => {
 
     // Principle 2: Tentukan Prioritas
     expect(screen.getByRole('heading', { level: 3, name: 'Tentukan Prioritas' })).toBeInTheDocument();
-    expect(screen.getByText('Memilih fitur yang relevan, bukan sekadar menambahkan sebanyak mungkin fitur.')).toBeInTheDocument();
+    expect(screen.getByText(siteConfig.approach.principles[1].description)).toBeInTheDocument();
 
-    // Principle 3: Bangun Sesuai Kesepakatan
-    expect(screen.getByRole('heading', { level: 3, name: 'Bangun Sesuai Kesepakatan' })).toBeInTheDocument();
-    expect(screen.getByText('Menjelaskan ruang lingkup dan proses pengerjaan sebelum pengembangan.')).toBeInTheDocument();
+    // Principle 3: Kerjakan Sesuai Kesepakatan / Bangun Sesuai Kesepakatan
+    expect(screen.getByRole('heading', { level: 3, name: siteConfig.approach.principles[2].title })).toBeInTheDocument();
+    expect(screen.getByText(siteConfig.approach.principles[2].description)).toBeInTheDocument();
   });
 
   it('avoids generic marketing superlatives', () => {

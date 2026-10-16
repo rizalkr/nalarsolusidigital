@@ -80,11 +80,13 @@ describe('HomePage (Full Narrative Composition)', () => {
     expect(h2Headings[4]).toHaveTextContent(siteConfig.closingCta.title);
   });
 
-  it('renders the mandatory tagline verbatim in the Hero section', () => {
-    render(<HomePage />);
-    expect(
-      screen.getByText(new RegExp(siteConfig.hero.tagline, 'i'))
-    ).toBeInTheDocument();
+  it('renders the mandatory tagline verbatim in the Hero section and Footer', () => {
+    const { container } = render(<HomePage />);
+    const heroSection = container.querySelector('section#beranda');
+    expect(heroSection).toHaveTextContent(siteConfig.hero.tagline);
+
+    const footer = container.querySelector('footer');
+    expect(footer).toHaveTextContent(siteConfig.tagline);
   });
 
   it('contains zero emoticons or emojis in the rendered markup', () => {

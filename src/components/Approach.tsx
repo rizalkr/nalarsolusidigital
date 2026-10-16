@@ -5,6 +5,7 @@ const principleIcons: Record<string, React.ComponentType<{ className?: string }>
   'Pahami Kebutuhan': Target,
   'Tentukan Prioritas': Sliders,
   'Bangun Sesuai Kesepakatan': ShieldCheck,
+  'Kerjakan Sesuai Kesepakatan': ShieldCheck,
 };
 
 export function Approach() {

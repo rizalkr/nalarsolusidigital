@@ -34,9 +34,17 @@ describe('HowItWorks Component', () => {
     expect(screen.getByRole('heading', { level: 3, name: /Langkah 2: Menentukan Solusi/i })).toBeInTheDocument();
     expect(screen.getByText(siteConfig.howItWorks.steps[1].description)).toBeInTheDocument();
 
-    // Step 3: Pengembangan
-    expect(screen.getByRole('heading', { level: 3, name: /Langkah 3: Pengembangan/i })).toBeInTheDocument();
+    // Step 3: Pengerjaan Solusi
+    expect(screen.getByRole('heading', { level: 3, name: /Langkah 3: Pengerjaan Solusi/i })).toBeInTheDocument();
     expect(screen.getByText(siteConfig.howItWorks.steps[2].description)).toBeInTheDocument();
+
+    // Verbatim text verification for steps 2 and 3
+    expect(
+      screen.getByText('Kami memetakan kebutuhan dan menyepakati bentuk solusi serta ruang lingkup pengerjaannya.')
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText('Solusi yang disepakati kami kerjakan, kemudian hasilnya ditinjau bersama Anda sebelum digunakan.')
+    ).toBeInTheDocument();
   });
 
   it('renders numeric indicators 01, 02, 03 for each step', () => {

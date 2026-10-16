@@ -192,7 +192,7 @@ export const siteConfig: SiteConfig = {
           'Halo Nalar Solusi Digital, saya tertarik dengan contoh solusi Rental Mobil.',
       },
     },
-    email: process.env.NEXT_PUBLIC_CONTACT_EMAIL?.trim() || null,
+    email: process.env.NEXT_PUBLIC_CONTACT_EMAIL?.trim() || 'nalarsolusidigital@gmail.com',
   },
   hero: {
     eyebrow: 'SOLUSI DIGITAL UNTUK USAHA LOKAL',
@@ -319,19 +319,19 @@ export const siteConfig: SiteConfig = {
       {
         step: 2,
         title: 'Menentukan Solusi',
-        description: 'Kami membantu memetakan kebutuhan dan menyepakati fitur serta ruang lingkup pengerjaan yang relevan.',
+        description: 'Kami memetakan kebutuhan dan menyepakati bentuk solusi serta ruang lingkup pengerjaannya.',
       },
       {
         step: 3,
-        title: 'Pengembangan',
-        description: 'Website dikembangkan sesuai kesepakatan, kemudian ditinjau sebelum dipublikasikan.',
+        title: 'Pengerjaan Solusi',
+        description: 'Solusi yang disepakati kami kerjakan, kemudian hasilnya ditinjau bersama Anda sebelum digunakan.',
       },
     ],
   },
   approach: {
     title: 'Tidak Semua Usaha Membutuhkan Solusi yang Sama',
     description:
-      'Ada bisnis yang hanya membutuhkan website profil. Ada yang memerlukan katalog produk. Ada pula yang membutuhkan alur pemesanan yang lebih terstruktur. Kami tidak ingin langsung menawarkan fitur yang rumit. Kami ingin memahami cara kerja usaha Anda terlebih dahulu, kemudian membantu menentukan solusi yang sesuai.',
+      'Setiap usaha memiliki kebutuhan dan tantangan yang berbeda. Karena itu, kami tidak langsung menawarkan solusi atau fitur tertentu. Kami berusaha memahami cara kerja, kendala, dan tujuan bisnis Anda terlebih dahulu agar solusi yang dipilih benar-benar relevan.',
     principles: [
       {
         title: 'Pahami Kebutuhan',
@@ -339,11 +339,11 @@ export const siteConfig: SiteConfig = {
       },
       {
         title: 'Tentukan Prioritas',
-        description: 'Memilih fitur yang relevan, bukan sekadar menambahkan sebanyak mungkin fitur.',
+        description: 'Utamakan hal yang benar-benar dibutuhkan, bukan menambahkan solusi yang tidak perlu.',
       },
       {
-        title: 'Bangun Sesuai Kesepakatan',
-        description: 'Menjelaskan ruang lingkup dan proses pengerjaan sebelum pengembangan.',
+        title: 'Kerjakan Sesuai Kesepakatan',
+        description: 'Ruang lingkup dan proses pengerjaan disepakati sebelum pekerjaan dimulai.',
       },
     ],
   },
@@ -355,7 +355,7 @@ export const siteConfig: SiteConfig = {
   },
   footer: {
     description:
-      'Membantu usaha lokal memiliki website yang profesional dan sesuai kebutuhan bisnis.',
+      'Membantu usaha lokal menemukan dan mengembangkan solusi digital yang sesuai dengan kebutuhan bisnis.',
     copyrightTemplate: '© {year} Nalar Solusi Digital. Hak cipta dilindungi.',
   },
   social: {},

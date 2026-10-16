@@ -77,7 +77,7 @@ export function Footer() {
                     rel="noopener noreferrer"
                     className="text-sm text-text-secondary hover:text-brand-accent-strong focus-visible:outline-brand-accent transition-colors"
                   >
-                    WhatsApp Konsultasi
+                    Konsultasi via WhatsApp
                   </a>
                 </li>
               ) : null}
@@ -104,11 +104,11 @@ export function Footer() {
           </div>
         </div>
 
-        {/* Bottom Bar: Dynamic Copyright Year */}
+        {/* Bottom Bar: Dynamic Copyright Year and Tagline */}
         <div className="border-t border-border mt-10 md:mt-12 pt-6 md:pt-8 flex flex-col sm:flex-row items-center justify-between text-xs text-text-secondary gap-3">
           <p>{copyrightText}</p>
-          <p className="text-text-secondary/80">
-            Solusi digital masuk akal untuk usaha lokal.
+          <p className="text-text-secondary/80 text-center sm:text-right">
+            {siteConfig.tagline}
           </p>
         </div>
       </div>

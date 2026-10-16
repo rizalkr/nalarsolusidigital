@@ -32,12 +32,29 @@ describe('Navbar Component', () => {
     });
   });
 
-  it('renders desktop consultation CTA button with fallback when WhatsApp is unconfigured', () => {
+  it('renders desktop consultation CTA button with fallback when WhatsApp and email are unconfigured', () => {
     const spy = vi.spyOn(whatsappModule, 'buildWhatsAppUrl').mockReturnValue(null);
+    const originalEmail = siteConfig.contact.email;
+    siteConfig.contact.email = null;
+
     render(<Navbar />);
     const ctaLinks = screen.getAllByRole('link', { name: /Konsultasi Gratis/i });
     expect(ctaLinks.length).toBeGreaterThan(0);
     expect(ctaLinks[0]).toHaveAttribute('href', '#tentang');
+
+    siteConfig.contact.email = originalEmail;
+    spy.mockRestore();
+  });
+
+  it('renders desktop consultation CTA button with mailto fallback when WhatsApp is unconfigured but email is available', () => {
+    const spy = vi.spyOn(whatsappModule, 'buildWhatsAppUrl').mockReturnValue(null);
+    render(<Navbar />);
+    const ctaLinks = screen.getAllByRole('link', { name: /Konsultasi Gratis/i });
+    expect(ctaLinks.length).toBeGreaterThan(0);
+    expect(ctaLinks[0]).toHaveAttribute(
+      'href',
+      `mailto:${siteConfig.contact.email}?subject=Konsultasi%20Website%20-%20Nalar%20Solusi%20Digital`
+    );
     spy.mockRestore();
   });
 
