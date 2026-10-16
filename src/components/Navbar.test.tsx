@@ -219,6 +219,39 @@ describe('MobileNav Component', () => {
     expect(document.activeElement).toBe(toggleButton);
   });
 
+  it('closes mobile drawer when backdrop is clicked', () => {
+    render(<MobileNav items={mockItems} whatsappUrl={null} />);
+    const toggleButton = screen.getByRole('button', { name: /Buka menu navigasi/i });
+    fireEvent.click(toggleButton);
+
+    expect(screen.getByRole('dialog')).toBeInTheDocument();
+
+    const backdrop = screen.getByTestId('mobile-nav-backdrop');
+    fireEvent.click(backdrop);
+
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+  });
+
+  it('applies refined glassmorphism styling and correct layout tokens to the drawer panel', () => {
+    render(<MobileNav items={mockItems} whatsappUrl={null} />);
+    const toggleButton = screen.getByRole('button', { name: /Buka menu navigasi/i });
+    fireEvent.click(toggleButton);
+
+    const dialog = screen.getByRole('dialog');
+    // Surface glassmorphism
+    expect(dialog).toHaveClass('backdrop-blur-xl');
+    expect(dialog).toHaveClass('bg-white/95');
+    expect(dialog).toHaveClass('border-l');
+    expect(dialog).toHaveClass('rounded-l-2xl');
+    expect(dialog).toHaveClass('shadow-[-8px_0_30px_rgba(30,43,75,0.15)]');
+
+    // Backdrop styling
+    const backdrop = screen.getByTestId('mobile-nav-backdrop');
+    expect(backdrop).toHaveClass('bg-brand-primary/50');
+    expect(backdrop).toHaveClass('fixed');
+    expect(backdrop).toHaveClass('inset-0');
+  });
+
   it('automatically closes mobile drawer when window is resized to desktop width (>= 768px)', () => {
     render(<MobileNav items={mockItems} whatsappUrl={null} />);
     const toggleButton = screen.getByRole('button', { name: /Buka menu navigasi/i });

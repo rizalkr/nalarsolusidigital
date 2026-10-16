@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef, useCallback } from 'react';
+import { createPortal } from 'react-dom';
 import Link from 'next/link';
 import { Menu, X } from 'lucide-react';
 
@@ -17,10 +18,22 @@ export function MobileNav({
   email,
   ctaLabel = 'Konsultasi Gratis',
 }: MobileNavProps) {
+  const [mounted, setMounted] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+
   const toggleButtonRef = useRef<HTMLButtonElement | null>(null);
   const closeButtonRef = useRef<HTMLButtonElement | null>(null);
   const drawerRef = useRef<HTMLDivElement | null>(null);
+
+  // Mark component mounted after client hydration
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // Open menu
+  const openMenu = useCallback(() => {
+    setIsOpen(true);
+  }, []);
 
   // Close menu and restore focus to trigger button
   const closeMenu = useCallback(() => {
@@ -33,7 +46,7 @@ export function MobileNav({
     setIsOpen(false);
   }, []);
 
-  // Keyboard navigation: Escape to close, focus trap inside dialog
+  // Keyboard navigation, focus trap, and body scroll lock
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (!isOpen) return;
@@ -70,8 +83,15 @@ export function MobileNav({
     if (isOpen) {
       document.addEventListener('keydown', handleKeyDown);
       document.body.style.overflow = 'hidden';
-      // Focus the close button when opened
-      closeButtonRef.current?.focus();
+      // Focus close button on next tick once mounted
+      const timer = setTimeout(() => {
+        closeButtonRef.current?.focus();
+      }, 0);
+      return () => {
+        clearTimeout(timer);
+        document.removeEventListener('keydown', handleKeyDown);
+        document.body.style.overflow = '';
+      };
     } else {
       document.body.style.overflow = '';
     }
@@ -82,7 +102,7 @@ export function MobileNav({
     };
   }, [isOpen, closeMenu]);
 
-  // Viewport resize handling: auto-close drawer and clear scroll lock when resizing to desktop
+  // Auto-close on viewport resize to desktop (>= 768px)
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth >= 768) {
@@ -96,13 +116,108 @@ export function MobileNav({
     };
   }, []);
 
+  const drawerContent = (
+    <div
+      className="fixed inset-0 z-50 flex justify-end"
+      role="presentation"
+    >
+      {/* Dark frosted glass backdrop covering full viewport */}
+      <div
+        data-testid="mobile-nav-backdrop"
+        className="fixed inset-0 bg-brand-primary/50 backdrop-blur-xs sm:backdrop-blur-sm animate-fade-in motion-reduce:animate-none"
+        onClick={closeMenu}
+        aria-hidden="true"
+      />
+
+      {/* Glassmorphism Drawer Panel */}
+      <div
+        ref={drawerRef}
+        id="mobile-navigation-drawer"
+        role="dialog"
+        aria-modal="true"
+        aria-label="Menu navigasi mobile"
+        className="relative w-full max-w-[300px] sm:max-w-xs h-full min-h-screen h-[100dvh] flex flex-col z-10 
+          bg-white/95 backdrop-blur-xl backdrop-saturate-150 supports-[not(backdrop-filter:blur(0))]:bg-white
+          border-l border-white/60 shadow-[-8px_0_30px_rgba(30,43,75,0.15)] rounded-l-2xl
+          animate-slide-in-right motion-reduce:animate-none overflow-hidden"
+      >
+        {/* Header: Title and Close button */}
+        <div className="flex items-center justify-between px-6 py-5 border-b border-border/70 shrink-0">
+          <span className="font-bold text-brand-primary text-lg tracking-tight">Menu</span>
+          <button
+            ref={closeButtonRef}
+            type="button"
+            onClick={closeMenu}
+            aria-label="Tutup panel menu"
+            className="p-2 text-text-secondary hover:text-brand-primary hover:bg-surface rounded-lg focus-visible:outline-brand-accent transition-colors"
+          >
+            <X className="w-5 h-5" aria-hidden="true" />
+          </button>
+        </div>
+
+        {/* Navigation Links */}
+        <nav
+          className="flex-1 px-4 py-6 overflow-y-auto space-y-1.5"
+          aria-label="Navigasi Menu Mobile"
+        >
+          <ul className="space-y-1.5">
+            {items.map((item) => (
+              <li key={item.href}>
+                <Link
+                  href={item.href}
+                  onClick={handleLinkClick}
+                  className="block px-4 py-3 text-base font-medium text-text-primary hover:text-brand-accent-strong hover:bg-brand-accent/10 active:bg-brand-accent/20 rounded-xl focus-visible:outline-brand-accent transition-all"
+                >
+                  {item.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </nav>
+
+        {/* Consultation CTA */}
+        <div className="p-6 pt-4 border-t border-border/70 bg-white/40 shrink-0">
+          {whatsappUrl ? (
+            <a
+              href={whatsappUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={handleLinkClick}
+              className="w-full inline-flex items-center justify-center px-4 py-3.5 bg-brand-primary text-white font-semibold rounded-xl hover:bg-brand-primary/90 focus-visible:outline-brand-accent transition-all shadow-md active:scale-[0.98]"
+            >
+              {ctaLabel}
+            </a>
+          ) : email ? (
+            <a
+              href={`mailto:${email}?subject=Konsultasi%20Website%20-%20Nalar%20Solusi%20Digital`}
+              onClick={handleLinkClick}
+              title={`Kirim email ke ${email}`}
+              className="w-full inline-flex items-center justify-center px-4 py-3.5 bg-brand-primary text-white font-semibold rounded-xl hover:bg-brand-primary/90 focus-visible:outline-brand-accent transition-all shadow-md active:scale-[0.98]"
+            >
+              {ctaLabel}
+            </a>
+          ) : (
+            <a
+              href="#tentang"
+              onClick={handleLinkClick}
+              title="Saluran konsultasi WhatsApp sedang dipersiapkan"
+              className="w-full inline-flex items-center justify-center px-4 py-3.5 bg-brand-primary text-white font-semibold rounded-xl hover:bg-brand-primary/90 focus-visible:outline-brand-accent transition-all shadow-md active:scale-[0.98]"
+            >
+              {ctaLabel}
+            </a>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+
   return (
     <div className="md:hidden">
       {/* Menu Toggle Button */}
       <button
         ref={toggleButtonRef}
         type="button"
-        onClick={() => setIsOpen((prev) => !prev)}
+        onClick={() => (isOpen ? closeMenu() : openMenu())}
         aria-expanded={isOpen}
         aria-controls="mobile-navigation-drawer"
         aria-label={isOpen ? 'Tutup menu navigasi' : 'Buka menu navigasi'}
@@ -111,91 +226,10 @@ export function MobileNav({
         <Menu className="w-6 h-6" aria-hidden="true" />
       </button>
 
-      {/* Backdrop and Drawer */}
-      {isOpen && (
-        <div className="fixed inset-0 z-50 flex">
-          {/* Backdrop */}
-          <div
-            className="fixed inset-0 bg-brand-primary/40 backdrop-blur-sm transition-opacity animate-fade-in"
-            onClick={closeMenu}
-            aria-hidden="true"
-          />
-
-          {/* Drawer Panel */}
-          <div
-            ref={drawerRef}
-            id="mobile-navigation-drawer"
-            role="dialog"
-            aria-modal="true"
-            aria-label="Menu navigasi mobile"
-            className="relative ml-auto w-full max-w-xs bg-white h-full shadow-2xl flex flex-col p-6 z-10 border-l border-border animate-slide-in-right"
-          >
-            {/* Header: Title and Close button */}
-            <div className="flex items-center justify-between pb-4 border-b border-border">
-              <span className="font-semibold text-brand-primary text-base">Menu</span>
-              <button
-                ref={closeButtonRef}
-                type="button"
-                onClick={closeMenu}
-                aria-label="Tutup panel menu"
-                className="p-2 text-text-secondary hover:text-brand-primary rounded-lg focus-visible:outline-brand-accent transition-colors"
-              >
-                <X className="w-5 h-5" aria-hidden="true" />
-              </button>
-            </div>
-
-            {/* Navigation Links */}
-            <nav className="flex-1 py-6 overflow-y-auto" aria-label="Navigasi Menu Mobile">
-              <ul className="space-y-2">
-                {items.map((item) => (
-                  <li key={item.href}>
-                    <Link
-                      href={item.href}
-                      onClick={handleLinkClick}
-                      className="block px-3 py-2.5 text-base font-medium text-text-primary hover:text-brand-accent-strong hover:bg-surface rounded-lg focus-visible:outline-brand-accent transition-colors"
-                    >
-                      {item.label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </nav>
-
-            {/* Consultation CTA */}
-            <div className="pt-4 border-t border-border">
-              {whatsappUrl ? (
-                <a
-                  href={whatsappUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  onClick={handleLinkClick}
-                  className="w-full inline-flex items-center justify-center px-4 py-3 bg-brand-primary text-white font-medium rounded-lg hover:bg-brand-primary/90 focus-visible:outline-brand-accent transition-colors shadow-sm"
-                >
-                  {ctaLabel}
-                </a>
-              ) : email ? (
-                <a
-                  href={`mailto:${email}?subject=Konsultasi%20Website%20-%20Nalar%20Solusi%20Digital`}
-                  onClick={handleLinkClick}
-                  title={`Kirim email ke ${email}`}
-                  className="w-full inline-flex items-center justify-center px-4 py-3 bg-brand-primary text-white font-medium rounded-lg hover:bg-brand-primary/90 focus-visible:outline-brand-accent transition-colors shadow-sm"
-                >
-                  {ctaLabel}
-                </a>
-              ) : (
-                <a
-                  href="#tentang"
-                  onClick={handleLinkClick}
-                  title="Saluran konsultasi WhatsApp sedang dipersiapkan"
-                  className="w-full inline-flex items-center justify-center px-4 py-3 bg-brand-primary text-white font-medium rounded-lg hover:bg-brand-primary/90 focus-visible:outline-brand-accent transition-colors shadow-sm"
-                >
-                  {ctaLabel}
-                </a>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
+      {/* Render via portal into document.body only when opened */}
+      {mounted && isOpen && typeof document !== 'undefined'
+        ? createPortal(drawerContent, document.body)
+        : null}
     </div>
   );
 }
