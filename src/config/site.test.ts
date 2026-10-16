@@ -30,10 +30,18 @@ describe('siteConfig', () => {
     expect(anchors).toEqual([
       '#beranda',
       '#layanan',
-      '#contoh-solusi',
+      '#demo',
       '#cara-kerja',
       '#tentang',
     ]);
+  });
+
+  it('configures demoSection metadata with latest copywriting specifications', () => {
+    expect(siteConfig.demoSection.badge).toBe('DEMO INTERAKTIF');
+    expect(siteConfig.demoSection.title).toBe('Jelajahi Demo Interaktif');
+    expect(siteConfig.demoSection.description).toBe(
+      'Lihat bagaimana kebutuhan bisnis diterjemahkan menjadi pengalaman digital, mulai dari katalog produk hingga layanan rental.'
+    );
   });
 
   it('configures both landscape and portrait logo assets with metadata', () => {
@@ -82,14 +90,17 @@ describe('siteConfig', () => {
     expect(konveksi).toBeDefined();
     expect(konveksi.badge).toBe('DEMO INTERAKTIF');
     expect(konveksi.title).toBe('Website Katalog untuk Konveksi');
-    expect(konveksi.ctaLabel).toBe('Lihat Demo Konveksi');
+    expect(konveksi.ctaLabel).toBe('Buka Demo Interaktif');
     expect(konveksi.features).toContain('Kalkulator estimasi harga');
+    expect(konveksi.features).toContain('Formulir pemesanan');
 
     const rental = demoMap['rental-mobil'];
     expect(rental).toBeDefined();
     expect(rental.badge).toBe('DEMO INTERAKTIF');
-    expect(rental.title).toBe('Website Profil dan Katalog Rental Mobil');
-    expect(rental.ctaLabel).toBe('Lihat Demo Rental Mobil');
+    expect(rental.title).toBe('Website Profil Rental Mobil');
+    expect(rental.ctaLabel).toBe('Buka Demo Interaktif');
+    expect(rental.features).toContain('Informasi armada');
+    expect(rental.features).toContain('Layanan rental');
   });
 
   it('configures 3 steps for Cara Kerja per PRD Section 8.5', () => {

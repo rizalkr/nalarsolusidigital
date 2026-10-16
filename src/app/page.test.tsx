@@ -19,8 +19,8 @@ describe('HomePage (Full Narrative Composition)', () => {
     const servicesSection = container.querySelector('section#layanan');
     expect(servicesSection).toBeInTheDocument();
 
-    // Section 3: Demo Showcase (#contoh-solusi)
-    const demoSection = container.querySelector('section#contoh-solusi');
+    // Section 3: Demo Showcase (#demo)
+    const demoSection = container.querySelector('section#demo');
     expect(demoSection).toBeInTheDocument();
 
     // Section 4: How It Works (#cara-kerja)
@@ -54,7 +54,7 @@ describe('HomePage (Full Narrative Composition)', () => {
       'header',
       'section#beranda',
       'section#layanan',
-      'section#contoh-solusi',
+      'section#demo',
       'section#cara-kerja',
       'section#tentang',
       'section[cta]',
@@ -74,7 +74,7 @@ describe('HomePage (Full Narrative Composition)', () => {
     const h2Headings = screen.getAllByRole('heading', { level: 2 });
     expect(h2Headings.length).toBe(5);
     expect(h2Headings[0]).toHaveTextContent('Solusi Digital Sesuai Kebutuhan Usaha Anda');
-    expect(h2Headings[1]).toHaveTextContent('Lihat Contoh Solusi Digital');
+    expect(h2Headings[1]).toHaveTextContent('Jelajahi Demo Interaktif');
     expect(h2Headings[2]).toHaveTextContent(siteConfig.howItWorks.title);
     expect(h2Headings[3]).toHaveTextContent(siteConfig.approach.title);
     expect(h2Headings[4]).toHaveTextContent(siteConfig.closingCta.title);

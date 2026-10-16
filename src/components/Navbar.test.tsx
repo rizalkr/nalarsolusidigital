@@ -20,7 +20,7 @@ describe('Navbar Component', () => {
     render(<Navbar />);
     const expectedAnchors = [
       { text: 'Layanan', href: '#layanan' },
-      { text: 'Contoh Solusi', href: '#contoh-solusi' },
+      { text: 'Demo', href: '#demo' },
       { text: 'Cara Kerja', href: '#cara-kerja' },
       { text: 'Tentang', href: '#tentang' },
     ];
@@ -58,7 +58,7 @@ describe('Navbar Component', () => {
 describe('MobileNav Component', () => {
   const mockItems = [
     { label: 'Layanan', href: '#layanan' },
-    { label: 'Contoh Solusi', href: '#contoh-solusi' },
+    { label: 'Demo', href: '#demo' },
     { label: 'Cara Kerja', href: '#cara-kerja' },
     { label: 'Tentang', href: '#tentang' },
   ];
@@ -82,7 +82,7 @@ describe('MobileNav Component', () => {
 
     // Nav items are visible in mobile drawer
     expect(screen.getByRole('link', { name: 'Layanan' })).toBeInTheDocument();
-    expect(screen.getByRole('link', { name: 'Contoh Solusi' })).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'Demo' })).toBeInTheDocument();
   });
 
   it('closes mobile drawer when Escape key is pressed', () => {

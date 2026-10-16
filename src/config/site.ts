@@ -77,6 +77,11 @@ export interface SiteConfig {
   };
   navigation: NavItem[];
   services: ServiceItem[];
+  demoSection: {
+    badge: string;
+    title: string;
+    description: string;
+  };
   demos: DemoItem[];
   howItWorks: {
     title: string;
@@ -196,7 +201,7 @@ export const siteConfig: SiteConfig = {
   navigation: [
     { label: 'Beranda', href: '#beranda' },
     { label: 'Layanan', href: '#layanan' },
-    { label: 'Contoh Solusi', href: '#contoh-solusi' },
+    { label: 'Demo', href: '#demo' },
     { label: 'Cara Kerja', href: '#cara-kerja' },
     { label: 'Tentang', href: '#tentang' },
   ],
@@ -268,6 +273,12 @@ export const siteConfig: SiteConfig = {
       ],
     },
   ],
+  demoSection: {
+    badge: 'DEMO INTERAKTIF',
+    title: 'Jelajahi Demo Interaktif',
+    description:
+      'Lihat bagaimana kebutuhan bisnis diterjemahkan menjadi pengalaman digital, mulai dari katalog produk hingga layanan rental.',
+  },
   demos: [
     {
       id: 'ruang-konveksi',
@@ -276,32 +287,32 @@ export const siteConfig: SiteConfig = {
       badge: 'DEMO INTERAKTIF',
       tagline: 'Katalog Produk, Simulasi Estimasi, dan Pemesanan',
       description:
-        'Contoh website yang menampilkan kategori produk, informasi produksi, kalkulator estimasi harga, dan alur pemesanan.',
+        'Contoh website untuk menampilkan katalog produk, informasi produksi, dan kalkulator estimasi harga.',
       features: [
-        'Katalog kategori produk',
+        'Katalog produk',
         'Galeri produk',
         'Informasi produksi',
         'Kalkulator estimasi harga',
-        'Formulir pesanan yang terhubung ke WhatsApp',
+        'Formulir pemesanan',
       ],
-      ctaLabel: 'Lihat Demo Konveksi',
+      ctaLabel: 'Buka Demo Interaktif',
       url: process.env.NEXT_PUBLIC_DEMO_KONVEKSI_URL?.trim() || null,
       previewImage: '/images/demos/konveksi-preview.png',
     },
     {
       id: 'rental-mobil',
       name: 'Rental Mobil',
-      title: 'Website Profil dan Katalog Rental Mobil',
+      title: 'Website Profil Rental Mobil',
       badge: 'DEMO INTERAKTIF',
       tagline: 'Informasi Armada, Layanan, dan Ketersediaan',
       description:
-        'Contoh website untuk memperkenalkan layanan rental mobil, menampilkan informasi armada, dan membantu calon pelanggan menemukan informasi yang diperlukan.',
+        'Contoh website untuk menampilkan armada, layanan rental, dan informasi kendaraan.',
       features: [
-        'Daftar armada beserta spesifikasi & tarif',
-        'Detail paket lepas kunci & dengan pengemudi',
-        'Akses cepat konsultasi ketersediaan',
+        'Informasi armada',
+        'Detail kendaraan',
+        'Layanan rental',
       ],
-      ctaLabel: 'Lihat Demo Rental Mobil',
+      ctaLabel: 'Buka Demo Interaktif',
       url: process.env.NEXT_PUBLIC_DEMO_RENTAL_URL?.trim() || null,
       previewImage: '/images/demos/rental-preview.png',
     },
