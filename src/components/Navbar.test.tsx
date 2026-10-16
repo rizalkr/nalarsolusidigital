@@ -1,8 +1,9 @@
 import { render, screen, fireEvent } from '@testing-library/react';
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { Navbar } from './Navbar';
 import { MobileNav } from './MobileNav';
 import { siteConfig } from '@/config/site';
+import * as whatsappModule from '@/lib/whatsapp';
 
 describe('Navbar Component', () => {
   it('renders the landscape logo linking to #beranda', () => {
@@ -32,11 +33,25 @@ describe('Navbar Component', () => {
   });
 
   it('renders desktop consultation CTA button with fallback when WhatsApp is unconfigured', () => {
+    const spy = vi.spyOn(whatsappModule, 'buildWhatsAppUrl').mockReturnValue(null);
     render(<Navbar />);
     const ctaLinks = screen.getAllByRole('link', { name: /Konsultasi Gratis/i });
     expect(ctaLinks.length).toBeGreaterThan(0);
-    // Since default env has no valid WA number, it falls back to #tentang
     expect(ctaLinks[0]).toHaveAttribute('href', '#tentang');
+    spy.mockRestore();
+  });
+
+  it('renders desktop consultation CTA button with external link when WhatsApp is configured', () => {
+    const spy = vi
+      .spyOn(whatsappModule, 'buildWhatsAppUrl')
+      .mockReturnValue('https://wa.me/6281529964902?text=Halo');
+    render(<Navbar />);
+    const ctaLinks = screen.getAllByRole('link', { name: /Konsultasi Gratis/i });
+    expect(ctaLinks.length).toBeGreaterThan(0);
+    expect(ctaLinks[0]).toHaveAttribute('href', 'https://wa.me/6281529964902?text=Halo');
+    expect(ctaLinks[0]).toHaveAttribute('target', '_blank');
+    expect(ctaLinks[0]).toHaveAttribute('rel', 'noopener noreferrer');
+    spy.mockRestore();
   });
 });
 

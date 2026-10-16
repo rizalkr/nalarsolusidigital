@@ -11,12 +11,12 @@ const config: Config = {
       colors: {
         'brand-primary': '#1E2B4B',
         'brand-accent': '#1AA99E',
-        'brand-accent-strong': '#087F79',
+        'brand-accent-strong': '#066F6A',
         'accent-surface': '#E7F7F5',
         brand: {
           primary: '#1E2B4B',
           accent: '#1AA99E',
-          'accent-strong': '#087F79',
+          'accent-strong': '#066F6A',
           'accent-surface': '#E7F7F5',
         },
         background: '#FFFFFF',

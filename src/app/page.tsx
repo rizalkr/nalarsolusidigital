@@ -2,6 +2,10 @@ import { Navbar } from '@/components/Navbar';
 import { Hero } from '@/components/Hero';
 import { Services } from '@/components/Services';
 import { DemoShowcase } from '@/components/DemoShowcase';
+import { HowItWorks } from '@/components/HowItWorks';
+import { Approach } from '@/components/Approach';
+import { ContactCTA } from '@/components/ContactCTA';
+import { Footer } from '@/components/Footer';
 
 export default function HomePage() {
   return (
@@ -11,7 +15,11 @@ export default function HomePage() {
         <Hero />
         <Services />
         <DemoShowcase />
+        <HowItWorks />
+        <Approach />
+        <ContactCTA />
       </main>
+      <Footer />
     </div>
   );
 }

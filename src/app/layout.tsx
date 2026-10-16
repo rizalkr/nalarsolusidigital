@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import { Plus_Jakarta_Sans } from 'next/font/google';
 import './globals.css';
 import { siteConfig } from '@/config/site';
@@ -10,18 +10,52 @@ const plusJakartaSans = Plus_Jakarta_Sans({
   display: 'swap',
 });
 
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  themeColor: '#1E2B4B',
+};
+
+const pageTitle = `${siteConfig.name} - Solusi Website untuk Usaha Lokal`;
+const pageDescription = siteConfig.description;
+
+const defaultBaseUrl = 'https://nalarsolusidigital.my.id';
+const siteBaseUrl =
+  siteConfig.isSiteUrlConfigured && siteConfig.siteUrl
+    ? siteConfig.siteUrl
+    : defaultBaseUrl;
+
 export const metadata: Metadata = {
   title: {
-    default: `${siteConfig.name} - Solusi Website untuk Usaha Lokal`,
+    default: pageTitle,
     template: `%s | ${siteConfig.name}`,
   },
-  description: siteConfig.description,
-  // Only set metadataBase when siteUrl is explicitly configured and validated
-  ...(siteConfig.isSiteUrlConfigured
-    ? { metadataBase: new URL(siteConfig.siteUrl) }
-    : {}),
+  description: pageDescription,
+  metadataBase: new URL(siteBaseUrl),
   icons: {
     icon: '/favicon.ico',
+  },
+  openGraph: {
+    title: pageTitle,
+    description: pageDescription,
+    ...(siteConfig.isSiteUrlConfigured ? { url: siteConfig.siteUrl } : {}),
+    siteName: siteConfig.name,
+    locale: 'id_ID',
+    type: 'website',
+    images: [
+      {
+        url: siteConfig.logo.portrait.src,
+        width: siteConfig.logo.portrait.width,
+        height: siteConfig.logo.portrait.height,
+        alt: siteConfig.name,
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: pageTitle,
+    description: pageDescription,
+    images: [siteConfig.logo.portrait.src],
   },
 };
 

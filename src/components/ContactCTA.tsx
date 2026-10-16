@@ -1,0 +1,71 @@
+import { ArrowRight } from 'lucide-react';
+import { siteConfig } from '@/config/site';
+import { buildWhatsAppUrl } from '@/lib/whatsapp';
+
+export function ContactCTA() {
+  const whatsappUrl = buildWhatsAppUrl({
+    message: siteConfig.contact.whatsapp.defaultMessages.consultation,
+  });
+
+  return (
+    <section
+      aria-labelledby="contact-cta-heading"
+      className="py-16 md:py-24 bg-brand-primary text-white border-b border-border"
+    >
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        {/* Eyebrow */}
+        <div className="mb-4">
+          <span className="inline-block text-xs md:text-sm font-semibold tracking-wider uppercase text-accent-surface bg-brand-accent/20 px-3 py-1.5 rounded-full border border-brand-accent/30">
+            Langkah Selanjutnya
+          </span>
+        </div>
+
+        {/* Headline */}
+        <h2
+          id="contact-cta-heading"
+          className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-white mb-4"
+        >
+          {siteConfig.closingCta.title}
+        </h2>
+
+        {/* Description */}
+        <p className="text-base sm:text-lg text-white/80 max-w-2xl mx-auto leading-relaxed mb-8">
+          {siteConfig.closingCta.description}
+        </p>
+
+        {/* CTA Button with safe fallback */}
+        <div className="flex justify-center">
+          {whatsappUrl ? (
+            <a
+              href={whatsappUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-center gap-2.5 px-8 py-4 text-base font-semibold text-brand-primary bg-brand-accent hover:bg-white rounded-lg shadow-md focus-visible:outline-brand-accent transition-colors"
+            >
+              <span>{siteConfig.closingCta.ctaLabel}</span>
+              <ArrowRight className="w-5 h-5" aria-hidden="true" />
+            </a>
+          ) : siteConfig.contact.email ? (
+            <a
+              href={`mailto:${siteConfig.contact.email}?subject=Konsultasi%20Website%20-%20Nalar%20Solusi%20Digital`}
+              title={`Kirim email ke ${siteConfig.contact.email}`}
+              className="inline-flex items-center justify-center gap-2.5 px-8 py-4 text-base font-semibold text-brand-primary bg-brand-accent hover:bg-white rounded-lg shadow-md focus-visible:outline-brand-accent transition-colors"
+            >
+              <span>{siteConfig.closingCta.ctaLabel}</span>
+              <ArrowRight className="w-5 h-5" aria-hidden="true" />
+            </a>
+          ) : (
+            <a
+              href="#tentang"
+              title="Saluran konsultasi WhatsApp sedang dipersiapkan"
+              className="inline-flex items-center justify-center gap-2.5 px-8 py-4 text-base font-semibold text-brand-primary bg-brand-accent hover:bg-white rounded-lg shadow-md focus-visible:outline-brand-accent transition-colors"
+            >
+              <span>{siteConfig.closingCta.ctaLabel}</span>
+              <ArrowRight className="w-5 h-5" aria-hidden="true" />
+            </a>
+          )}
+        </div>
+      </div>
+    </section>
+  );
+}

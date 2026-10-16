@@ -152,7 +152,7 @@ export function MobileNav({
                     <Link
                       href={item.href}
                       onClick={handleLinkClick}
-                      className="block px-3 py-2.5 text-base font-medium text-text-primary hover:text-brand-accent-strong hover:bg-surface rounded-lg transition-colors"
+                      className="block px-3 py-2.5 text-base font-medium text-text-primary hover:text-brand-accent-strong hover:bg-surface rounded-lg focus-visible:outline-brand-accent transition-colors"
                     >
                       {item.label}
                     </Link>
