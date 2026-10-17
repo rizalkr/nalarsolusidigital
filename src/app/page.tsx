@@ -6,6 +6,7 @@ import { HowItWorks } from '@/components/HowItWorks';
 import { Approach } from '@/components/Approach';
 import { ContactCTA } from '@/components/ContactCTA';
 import { Footer } from '@/components/Footer';
+import { ConsultationModal } from '@/components/ConsultationModal';
 
 export default function HomePage() {
   return (
@@ -20,6 +21,7 @@ export default function HomePage() {
         <ContactCTA />
       </main>
       <Footer />
+      <ConsultationModal />
     </div>
   );
 }

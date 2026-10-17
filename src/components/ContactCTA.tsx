@@ -1,12 +1,8 @@
 import { ArrowRight } from 'lucide-react';
 import { siteConfig } from '@/config/site';
-import { buildWhatsAppUrl } from '@/lib/whatsapp';
+import { ConsultationButton } from './ConsultationButton';
 
 export function ContactCTA() {
-  const whatsappUrl = buildWhatsAppUrl({
-    message: siteConfig.contact.whatsapp.defaultMessages.consultation,
-  });
-
   return (
     <section
       aria-labelledby="contact-cta-heading"
@@ -33,39 +29,15 @@ export function ContactCTA() {
           {siteConfig.closingCta.description}
         </p>
 
-        {/* CTA Button with safe fallback */}
+        {/* CTA Button opening consultation modal */}
         <div className="flex justify-center">
-          {whatsappUrl ? (
-            <a
-              href={whatsappUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center justify-center gap-2.5 px-8 py-4 text-base font-semibold text-brand-primary bg-brand-accent hover:bg-white rounded-lg shadow-md focus-visible:outline-brand-accent transition-colors"
-            >
-              <span>{siteConfig.closingCta.ctaLabel}</span>
-              <ArrowRight className="w-5 h-5" aria-hidden="true" />
-            </a>
-          ) : siteConfig.contact.email ? (
-            <a
-              href={`mailto:${siteConfig.contact.email}?subject=Konsultasi%20Website%20-%20Nalar%20Solusi%20Digital`}
-              title={`Kirim email ke ${siteConfig.contact.email}`}
-              className="inline-flex items-center justify-center gap-2.5 px-8 py-4 text-base font-semibold text-brand-primary bg-brand-accent hover:bg-white rounded-lg shadow-md focus-visible:outline-brand-accent transition-colors"
-            >
-              <span>{siteConfig.closingCta.ctaLabel}</span>
-              <ArrowRight className="w-5 h-5" aria-hidden="true" />
-            </a>
-          ) : (
-            <a
-              href="#tentang"
-              title="Saluran konsultasi WhatsApp sedang dipersiapkan"
-              className="inline-flex items-center justify-center gap-2.5 px-8 py-4 text-base font-semibold text-brand-primary bg-brand-accent hover:bg-white rounded-lg shadow-md focus-visible:outline-brand-accent transition-colors"
-            >
-              <span>{siteConfig.closingCta.ctaLabel}</span>
-              <ArrowRight className="w-5 h-5" aria-hidden="true" />
-            </a>
-          )}
+          <ConsultationButton className="inline-flex items-center justify-center gap-2.5 px-8 py-4 text-base font-semibold text-brand-primary bg-brand-accent hover:bg-white rounded-lg shadow-md focus-visible:outline-brand-accent transition-colors cursor-pointer">
+            <span>{siteConfig.closingCta.ctaLabel}</span>
+            <ArrowRight className="w-5 h-5" aria-hidden="true" />
+          </ConsultationButton>
         </div>
       </div>
     </section>
   );
 }
+

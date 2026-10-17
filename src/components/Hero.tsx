@@ -1,13 +1,10 @@
 import Link from 'next/link';
 import { siteConfig } from '@/config/site';
-import { buildWhatsAppUrl } from '@/lib/whatsapp';
 import { ArrowRight } from 'lucide-react';
 import { HeroVisual } from './HeroVisual';
+import { ConsultationButton } from './ConsultationButton';
 
 export function Hero() {
-  const whatsappUrl = buildWhatsAppUrl({
-    message: siteConfig.contact.whatsapp.defaultMessages.consultation,
-  });
 
   return (
     <section
@@ -44,32 +41,9 @@ export function Hero() {
 
             {/* Dual CTAs */}
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4">
-              {whatsappUrl ? (
-                <a
-                  href={whatsappUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center justify-center px-6 py-3.5 text-base font-semibold text-white bg-brand-primary hover:bg-brand-primary/90 rounded-lg shadow-sm focus-visible:outline-brand-accent transition-colors"
-                >
-                  {siteConfig.hero.primaryCta}
-                </a>
-              ) : siteConfig.contact.email ? (
-                <a
-                  href={`mailto:${siteConfig.contact.email}?subject=Konsultasi%20Website%20-%20Nalar%20Solusi%20Digital`}
-                  title={`Kirim email ke ${siteConfig.contact.email}`}
-                  className="inline-flex items-center justify-center px-6 py-3.5 text-base font-semibold text-white bg-brand-primary hover:bg-brand-primary/90 rounded-lg shadow-sm focus-visible:outline-brand-accent transition-colors"
-                >
-                  {siteConfig.hero.primaryCta}
-                </a>
-              ) : (
-                <a
-                  href="#tentang"
-                  title="Saluran konsultasi WhatsApp sedang dipersiapkan"
-                  className="inline-flex items-center justify-center px-6 py-3.5 text-base font-semibold text-white bg-brand-primary hover:bg-brand-primary/90 rounded-lg shadow-sm focus-visible:outline-brand-accent transition-colors"
-                >
-                  {siteConfig.hero.primaryCta}
-                </a>
-              )}
+              <ConsultationButton className="inline-flex items-center justify-center px-6 py-3.5 text-base font-semibold text-white bg-brand-primary hover:bg-brand-primary/90 rounded-lg shadow-sm focus-visible:outline-brand-accent transition-colors cursor-pointer">
+                {siteConfig.hero.primaryCta}
+              </ConsultationButton>
 
               <Link
                 href="#contoh-solusi"

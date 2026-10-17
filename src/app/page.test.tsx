@@ -1,9 +1,13 @@
-import { render, screen } from '@testing-library/react';
-import { describe, it, expect } from 'vitest';
+import { render, screen, fireEvent } from '@testing-library/react';
+import { describe, it, expect, beforeEach } from 'vitest';
 import HomePage from './page';
 import { siteConfig } from '@/config/site';
+import { consultationModalStore } from '@/lib/consultationModalStore';
 
 describe('HomePage (Full Narrative Composition)', () => {
+  beforeEach(() => {
+    consultationModalStore.reset();
+  });
   it('renders all sections in single page narrative order', () => {
     const { container } = render(<HomePage />);
 
@@ -237,5 +241,32 @@ describe('HomePage (Full Narrative Composition)', () => {
     });
   });
 
+  it('opens the same consultation modal when Hero CTA and Langkah Selanjutnya CTA are clicked', () => {
+    render(<HomePage />);
+
+    // Initially modal is not open
+    expect(screen.queryByRole('dialog', { name: /Mari Ceritakan Kebutuhan Usaha Anda/i })).not.toBeInTheDocument();
+
+    // 1. Click Hero CTA
+    const heroCta = screen.getByRole('button', { name: /^Konsultasi Gratis$/i });
+    fireEvent.click(heroCta);
+
+    // Modal is now open
+    const modalFromHero = screen.getByRole('dialog', { name: /Mari Ceritakan Kebutuhan Usaha Anda/i });
+    expect(modalFromHero).toBeInTheDocument();
+
+    // Close modal via Batal button
+    const cancelBtn = screen.getByRole('button', { name: /Batal/i });
+    fireEvent.click(cancelBtn);
+    expect(screen.queryByRole('dialog', { name: /Mari Ceritakan Kebutuhan Usaha Anda/i })).not.toBeInTheDocument();
+
+    // 2. Click Langkah Selanjutnya CTA (ContactCTA)
+    const closingCta = screen.getByRole('button', { name: new RegExp(siteConfig.closingCta.ctaLabel, 'i') });
+    fireEvent.click(closingCta);
+
+    // Same modal opens
+    const modalFromClosing = screen.getByRole('dialog', { name: /Mari Ceritakan Kebutuhan Usaha Anda/i });
+    expect(modalFromClosing).toBeInTheDocument();
+  });
 });
 

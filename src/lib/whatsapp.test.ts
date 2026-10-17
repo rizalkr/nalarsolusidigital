@@ -3,6 +3,7 @@ import {
   sanitizePhoneNumber,
   isValidPhoneNumber,
   buildWhatsAppUrl,
+  formatConsultationMessage,
 } from './whatsapp';
 import { siteConfig } from '@/config/site';
 
@@ -128,6 +129,89 @@ describe('whatsapp helper', () => {
     it('generates a URL without text parameter when no message is provided', () => {
       const url = buildWhatsAppUrl({ phoneNumber: '081234567890' });
       expect(url).toBe('https://wa.me/6281234567890');
+    });
+  });
+
+  describe('formatConsultationMessage', () => {
+    it('formats template correctly when businessName is provided', () => {
+      const message = formatConsultationMessage({
+        name: 'Budi Santoso',
+        businessName: 'Kopi Nusantara',
+        category: 'Kehadiran Digital',
+        needs: 'Ingin membuat website profil dan menu online untuk coffee shop.',
+      });
+
+      expect(message).toBe(
+        'Halo Nalar Solusi Digital, saya ingin berkonsultasi mengenai kebutuhan bisnis saya.\n\n' +
+          'Nama: Budi Santoso\n' +
+          'Nama Usaha: Kopi Nusantara\n' +
+          'Kebutuhan: Kehadiran Digital\n\n' +
+          'Ceritakan kebutuhan:\n' +
+          'Ingin membuat website profil dan menu online untuk coffee shop.\n\n' +
+          'Saya ingin mendiskusikan solusi yang paling sesuai dengan kebutuhan tersebut.\n\n' +
+          'Terima kasih.'
+      );
+    });
+
+    it('omits the "Nama Usaha" line when businessName is empty, omitted, or whitespace only', () => {
+      const messageWithoutBusiness = formatConsultationMessage({
+        name: 'Siti Rahma',
+        category: 'Proses Pemesanan dan Administrasi',
+        needs: 'Butuh sistem pencatatan pesanan sederhana.',
+      });
+
+      expect(messageWithoutBusiness).not.toContain('Nama Usaha');
+      expect(messageWithoutBusiness).toBe(
+        'Halo Nalar Solusi Digital, saya ingin berkonsultasi mengenai kebutuhan bisnis saya.\n\n' +
+          'Nama: Siti Rahma\n' +
+          'Kebutuhan: Proses Pemesanan dan Administrasi\n\n' +
+          'Ceritakan kebutuhan:\n' +
+          'Butuh sistem pencatatan pesanan sederhana.\n\n' +
+          'Saya ingin mendiskusikan solusi yang paling sesuai dengan kebutuhan tersebut.\n\n' +
+          'Terima kasih.'
+      );
+
+      const messageWithWhitespaceBusiness = formatConsultationMessage({
+        name: 'Siti Rahma',
+        businessName: '   ',
+        category: 'Proses Pemesanan dan Administrasi',
+        needs: 'Butuh sistem pencatatan pesanan sederhana.',
+      });
+
+      expect(messageWithWhitespaceBusiness).not.toContain('Nama Usaha');
+    });
+
+    it('trims leading and trailing spaces from all fields', () => {
+      const message = formatConsultationMessage({
+        name: '   Andi   ',
+        businessName: '   Bengkel Maju   ',
+        category: '   Lainnya   ',
+        needs: '   Integrasi alur kerja operasional.   ',
+      });
+
+      expect(message).toContain('Nama: Andi');
+      expect(message).toContain('Nama Usaha: Bengkel Maju');
+      expect(message).toContain('Kebutuhan: Lainnya');
+      expect(message).toContain('Ceritakan kebutuhan:\nIntegrasi alur kerja operasional.');
+    });
+
+    it('encodes cleanly with buildWhatsAppUrl without breaking special characters or newlines', () => {
+      const message = formatConsultationMessage({
+        name: 'Ahmad & Partner',
+        category: 'Identitas dan Infrastruktur Digital',
+        needs: 'Setup domain & email bisnis (@ahmad.id) + website 1 halaman?',
+      });
+
+      const url = buildWhatsAppUrl({
+        phoneNumber: '081234567890',
+        message,
+      });
+
+      expect(url).toBeDefined();
+      expect(url).toContain('wa.me/6281234567890?text=');
+      // Verify encoded message can be decoded back to exact original string
+      const encodedPart = url!.split('?text=')[1];
+      expect(decodeURIComponent(encodedPart)).toBe(message);
     });
   });
 });

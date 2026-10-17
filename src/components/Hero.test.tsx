@@ -1,9 +1,14 @@
-import { render, screen } from '@testing-library/react';
-import { describe, it, expect } from 'vitest';
+import { render, screen, fireEvent } from '@testing-library/react';
+import { describe, it, expect, beforeEach } from 'vitest';
 import { Hero } from './Hero';
+import { ConsultationModal } from './ConsultationModal';
+import { consultationModalStore } from '@/lib/consultationModalStore';
 import { siteConfig } from '@/config/site';
 
 describe('Hero Component', () => {
+  beforeEach(() => {
+    consultationModalStore.reset();
+  });
   it('renders section with id="beranda" and scroll-margin classes to prevent header occlusion', () => {
     const { container } = render(<Hero />);
     const section = container.querySelector('section#beranda');
@@ -44,15 +49,31 @@ describe('Hero Component', () => {
     expect(ctaIndex).toBeGreaterThan(taglineIndex);
   });
 
-  it('renders primary CTA (Konsultasi Gratis) and secondary CTA (Lihat Demo)', () => {
+  it('renders primary CTA button (Konsultasi Gratis) and secondary CTA (Lihat Demo)', () => {
     render(<Hero />);
-    const primaryCta = screen.getByRole('link', { name: new RegExp(siteConfig.hero.primaryCta, 'i') });
+    const primaryCta = screen.getByRole('button', { name: new RegExp(siteConfig.hero.primaryCta, 'i') });
     expect(primaryCta).toBeInTheDocument();
 
     const secondaryCta = screen.getByRole('link', { name: new RegExp(siteConfig.hero.secondaryCta, 'i') });
     expect(secondaryCta).toBeInTheDocument();
     expect(secondaryCta).toHaveTextContent('Lihat Demo');
     expect(secondaryCta).toHaveAttribute('href', '#contoh-solusi');
+  });
+
+  it('triggers the consultation modal when primary CTA is clicked', () => {
+    render(
+      <>
+        <Hero />
+        <ConsultationModal />
+      </>
+    );
+
+    const primaryCta = screen.getByRole('button', { name: new RegExp(siteConfig.hero.primaryCta, 'i') });
+    fireEvent.click(primaryCta);
+
+    expect(
+      screen.getByRole('dialog', { name: /Mari Ceritakan Kebutuhan Usaha Anda/i })
+    ).toBeInTheDocument();
   });
 
   it('renders the three informative floating cards in the hero visual', () => {

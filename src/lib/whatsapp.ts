@@ -134,3 +134,47 @@ export function buildWhatsAppUrl(options?: BuildWhatsAppUrlOptions): string | nu
 
   return `https://wa.me/${sanitized}`;
 }
+
+export interface ConsultationFormData {
+  name: string;
+  businessName?: string;
+  category: string;
+  needs: string;
+}
+
+/**
+ * Formats a consultation request into the official WhatsApp message template.
+ *
+ * Rules:
+ * - Line "Nama Usaha: [businessName]" is included only when businessName is provided and non-empty.
+ * - Field values are trimmed.
+ * - Structure and newlines are preserved for clear readability in WhatsApp.
+ */
+export function formatConsultationMessage(data: ConsultationFormData): string {
+  const name = data.name.trim();
+  const businessName = data.businessName?.trim();
+  const category = data.category.trim();
+  const needs = data.needs.trim();
+
+  const lines = [
+    'Halo Nalar Solusi Digital, saya ingin berkonsultasi mengenai kebutuhan bisnis saya.',
+    '',
+    `Nama: ${name}`,
+  ];
+
+  if (businessName) {
+    lines.push(`Nama Usaha: ${businessName}`);
+  }
+
+  lines.push(`Kebutuhan: ${category}`);
+  lines.push('');
+  lines.push('Ceritakan kebutuhan:');
+  lines.push(needs);
+  lines.push('');
+  lines.push('Saya ingin mendiskusikan solusi yang paling sesuai dengan kebutuhan tersebut.');
+  lines.push('');
+  lines.push('Terima kasih.');
+
+  return lines.join('\n');
+}
+
