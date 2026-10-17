@@ -205,10 +205,10 @@ export const siteConfig: SiteConfig = {
   },
   navigation: [
     { label: 'Beranda', href: '#beranda' },
-    { label: 'Layanan', href: '#layanan' },
+    { label: 'Solusi', href: '#layanan' },
     { label: 'Demo', href: '#demo' },
     { label: 'Cara Kerja', href: '#cara-kerja' },
-    { label: 'Tentang', href: '#tentang' },
+    { label: 'Pendekatan', href: '#tentang' },
   ],
   servicesSection: {
     badge: 'AREA SOLUSI',
