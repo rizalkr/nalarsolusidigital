@@ -67,3 +67,4 @@ describe('Faq Component', () => {
     expect(parsedJsonLd.mainEntity[0].acceptedAnswer.text).toBe(siteConfig.faq.items[0].answer);
   });
 });
+

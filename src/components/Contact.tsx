@@ -114,3 +114,4 @@ export function Contact() {
     </section>
   );
 }
+

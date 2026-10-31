@@ -63,3 +63,4 @@ describe('Contact Component', () => {
     siteConfig.contact.email = originalEmail;
   });
 });
+
