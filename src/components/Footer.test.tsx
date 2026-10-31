@@ -35,13 +35,15 @@ describe('Footer Component', () => {
     expect(nav).toBeInTheDocument();
   });
 
-  it('renders all 4 navigation anchors derived from siteConfig: #layanan, #demo, #cara-kerja, #tentang', () => {
+  it('renders all 6 navigation anchors derived from siteConfig: #layanan, #demo, #cara-kerja, #tentang, #faq, #kontak', () => {
     render(<Footer />);
     const expectedAnchors = [
-      { text: 'Layanan', href: '#layanan' },
+      { text: 'Solusi', href: '#layanan' },
       { text: 'Demo', href: '#demo' },
       { text: 'Cara Kerja', href: '#cara-kerja' },
-      { text: 'Tentang', href: '#tentang' },
+      { text: 'Pendekatan', href: '#tentang' },
+      { text: 'FAQ', href: '#faq' },
+      { text: 'Kontak', href: '#kontak' },
     ];
 
     expectedAnchors.forEach(({ text, href }) => {
@@ -70,10 +72,15 @@ describe('Footer Component', () => {
   });
 
   it('renders configured email contact channel with mailto scheme', () => {
+    const originalEmail = siteConfig.contact.email;
+    siteConfig.contact.email = 'info@nalarsolusidigital.my.id';
+
     render(<Footer />);
-    const emailLink = screen.getByRole('link', { name: 'nalarsolusidigital@gmail.com' });
+    const emailLink = screen.getByRole('link', { name: 'info@nalarsolusidigital.my.id' });
     expect(emailLink).toBeInTheDocument();
-    expect(emailLink).toHaveAttribute('href', 'mailto:nalarsolusidigital@gmail.com');
+    expect(emailLink).toHaveAttribute('href', 'mailto:info@nalarsolusidigital.my.id');
+
+    siteConfig.contact.email = originalEmail;
   });
 
   it('displays fallback message when neither WhatsApp nor email is configured', () => {

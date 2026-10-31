@@ -19,10 +19,12 @@ describe('Navbar Component', () => {
   it('renders desktop navigation links with correct anchor targets', () => {
     render(<Navbar />);
     const expectedAnchors = [
-      { text: 'Layanan', href: '#layanan' },
+      { text: 'Solusi', href: '#layanan' },
       { text: 'Demo', href: '#demo' },
       { text: 'Cara Kerja', href: '#cara-kerja' },
-      { text: 'Tentang', href: '#tentang' },
+      { text: 'Pendekatan', href: '#tentang' },
+      { text: 'FAQ', href: '#faq' },
+      { text: 'Kontak', href: '#kontak' },
     ];
 
     expectedAnchors.forEach(({ text, href }) => {
@@ -48,13 +50,18 @@ describe('Navbar Component', () => {
 
   it('renders desktop consultation CTA button with mailto fallback when WhatsApp is unconfigured but email is available', () => {
     const spy = vi.spyOn(whatsappModule, 'buildWhatsAppUrl').mockReturnValue(null);
+    const originalEmail = siteConfig.contact.email;
+    siteConfig.contact.email = 'info@nalarsolusidigital.my.id';
+
     render(<Navbar />);
     const ctaLinks = screen.getAllByRole('link', { name: /Konsultasi Gratis/i });
     expect(ctaLinks.length).toBeGreaterThan(0);
     expect(ctaLinks[0]).toHaveAttribute(
       'href',
-      `mailto:${siteConfig.contact.email}?subject=Konsultasi%20Website%20-%20Nalar%20Solusi%20Digital`
+      `mailto:info@nalarsolusidigital.my.id?subject=Konsultasi%20Website%20-%20Nalar%20Solusi%20Digital`
     );
+
+    siteConfig.contact.email = originalEmail;
     spy.mockRestore();
   });
 

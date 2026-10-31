@@ -178,3 +178,34 @@ export function formatConsultationMessage(data: ConsultationFormData): string {
   return lines.join('\n');
 }
 
+/**
+ * Formats a phone number for local Indonesian display: 08xx-xxxx-xxxx (4-4-remainder).
+ * Converts international format (628xx) to local (08xx).
+ * Returns empty string if the number is invalid or empty.
+ */
+export function formatPhoneDisplay(phone?: string | null): string {
+  if (!phone || typeof phone !== 'string') {
+    return '';
+  }
+
+  const trimmed = phone.trim();
+  if (!isValidPhoneNumber(trimmed)) {
+    return '';
+  }
+
+  const sanitized = sanitizePhoneNumber(trimmed);
+  let localNumber = sanitized;
+  if (sanitized.startsWith('62')) {
+    localNumber = '0' + sanitized.slice(2);
+  }
+
+  if (localNumber.length <= 4) {
+    return localNumber;
+  }
+  if (localNumber.length <= 8) {
+    return `${localNumber.slice(0, 4)}-${localNumber.slice(4)}`;
+  }
+  return `${localNumber.slice(0, 4)}-${localNumber.slice(4, 8)}-${localNumber.slice(8)}`;
+}
+
+

@@ -36,6 +36,46 @@ export interface PrincipleItem {
   description: string;
 }
 
+export interface EmailBusinessBenefit {
+  id: number;
+  title: string;
+  description: string;
+}
+
+export interface EmailBusinessSection {
+  badge: string;
+  title: string;
+  lead: string;
+  benefits: EmailBusinessBenefit[];
+  importantNotice: {
+    label: string;
+    description: string;
+  };
+  closingText: string;
+  ctaLabel: string;
+}
+
+export interface FaqItem {
+  id: string;
+  question: string;
+  answer: string;
+}
+
+export interface FaqSection {
+  badge: string;
+  title: string;
+  items: FaqItem[];
+}
+
+export interface ContactSection {
+  badge: string;
+  title: string;
+  description: string;
+  whatsappLabel: string;
+  emailLabel: string;
+  location: string;
+}
+
 export interface LogoItem {
   src: string;
   width: number;
@@ -61,6 +101,7 @@ export interface SiteConfig {
       defaultMessages: {
         general: string;
         consultation: string;
+        emailBisnis: string;
         konveksi: string;
         rental: string;
       };
@@ -82,6 +123,7 @@ export interface SiteConfig {
     description: string;
   };
   services: ServiceItem[];
+  emailBusiness: EmailBusinessSection;
   demoSection: {
     badge: string;
     title: string;
@@ -98,11 +140,13 @@ export interface SiteConfig {
     description: string;
     principles: PrincipleItem[];
   };
+  faq: FaqSection;
   closingCta: {
     title: string;
     description: string;
     ctaLabel: string;
   };
+  contactSection: ContactSection;
   footer: {
     description: string;
     copyrightTemplate: string;
@@ -183,16 +227,18 @@ export const siteConfig: SiteConfig = {
       isConfigured: whatsappConfig.isConfigured,
       defaultMessages: {
         general:
-          'Halo Nalar Solusi Digital, saya ingin konsultasi mengenai pembuatan website untuk usaha saya.',
+          'Halo Nalar Solusi Digital, saya ingin konsultasi mengenai kebutuhan digital untuk usaha saya.',
         consultation:
-          'Halo Nalar Solusi Digital, saya ingin mendiskusikan kebutuhan website usaha saya.',
+          'Halo Nalar Solusi Digital, saya ingin mendiskusikan kebutuhan digital usaha saya.',
+        emailBisnis:
+          'Halo Nalar Solusi Digital, saya ingin tanya tentang email bisnis untuk usaha saya.',
         konveksi:
           'Halo Nalar Solusi Digital, saya tertarik dengan contoh solusi Ruang Konveksi.',
         rental:
           'Halo Nalar Solusi Digital, saya tertarik dengan contoh solusi Rental Mobil.',
       },
     },
-    email: process.env.NEXT_PUBLIC_CONTACT_EMAIL?.trim() || 'nalarsolusidigital@gmail.com',
+    email: process.env.NEXT_PUBLIC_CONTACT_EMAIL?.trim() || null,
   },
   hero: {
     eyebrow: 'SOLUSI DIGITAL UNTUK USAHA LOKAL',
@@ -209,6 +255,8 @@ export const siteConfig: SiteConfig = {
     { label: 'Demo', href: '#demo' },
     { label: 'Cara Kerja', href: '#cara-kerja' },
     { label: 'Pendekatan', href: '#tentang' },
+    { label: 'FAQ', href: '#faq' },
+    { label: 'Kontak', href: '#kontak' },
   ],
   servicesSection: {
     badge: 'AREA SOLUSI',
@@ -262,6 +310,40 @@ export const siteConfig: SiteConfig = {
       ],
     },
   ],
+  emailBusiness: {
+    badge: 'EMAIL BISNIS',
+    title: 'Email Bisnis: Kecil, Tapi Sering Jadi Penentu',
+    lead:
+      'Alamat email adalah hal pertama yang dilihat calon pelanggan dan mitra dari bisnis Anda. Email dengan domain perusahaan sendiri memberi tiga hal sekaligus:',
+    benefits: [
+      {
+        id: 1,
+        title: 'Kredibilitas instan.',
+        description:
+          'nama@usahaanda.com terlihat jauh lebih serius daripada usahaanda123@gmail.com — terutama di mata pelanggan baru dan mitra korporat.',
+      },
+      {
+        id: 2,
+        title: 'Aset yang tinggal.',
+        description:
+          'Email tetap milik usaha meski karyawan berganti. Tidak ada lagi kontak pelanggan yang ikut pergi bersama mantan admin.',
+      },
+      {
+        id: 3,
+        title: 'Alamat per fungsi.',
+        description:
+          'Pisahkan urusan dengan rapi: cs@ untuk layanan pelanggan, order@ untuk pemesanan, keuangan@ untuk administrasi.',
+      },
+    ],
+    importantNotice: {
+      label: 'Penting untuk diketahui:',
+      description:
+        'usaha yang mengikuti pengadaan barang/jasa pemerintah (LPSE/SPSE) wajib menggunakan email resmi perusahaan sebagai syarat administrasi. Tanpa email domain sendiri, proses pendaftaran bisa terhenti sebelum mulai.',
+    },
+    closingText:
+      'Kami bantu menyiapkan email bisnis Anda dari nol — domain, pengaturan, sampai siap dipakai.',
+    ctaLabel: 'Tanya tentang email bisnis',
+  },
   demoSection: {
     badge: 'DEMO INTERAKTIF',
     title: 'Jelajahi Demo Interaktif',
@@ -347,11 +429,62 @@ export const siteConfig: SiteConfig = {
       },
     ],
   },
+  faq: {
+    badge: 'FAQ',
+    title: 'Pertanyaan yang Sering Ditanyakan',
+    items: [
+      {
+        id: 'faq-1',
+        question: 'Apakah setiap usaha butuh website?',
+        answer:
+          'Tidak. Itulah kenapa kami selalu mulai dari memahami kebutuhan Anda dulu. Kadang yang paling masuk akal adalah katalog digital, kadang merapikan administrasi, kadang memang website. Kami akan bilang terus terang kalau usaha Anda belum membutuhkannya.',
+      },
+      {
+        id: 'faq-2',
+        question: 'Bagaimana biayanya ditentukan?',
+        answer:
+          'Setelah diskusi kebutuhan. Tidak ada paket harga kaku — ruang lingkup dan estimasi kami susun berdasarkan apa yang benar-benar Anda butuhkan, lalu disepakati bersama sebelum pengerjaan dimulai.',
+      },
+      {
+        id: 'faq-3',
+        question: 'Berapa lama pengerjaannya?',
+        answer:
+          'Tergantung ruang lingkupnya. Estimasi waktu kami sampaikan di awal, setelah kebutuhan dipetakan — dan menjadi bagian dari kesepakatan sebelum kami mulai.',
+      },
+      {
+        id: 'faq-4',
+        question: 'Apa yang perlu saya siapkan?',
+        answer:
+          'Cukup cerita tentang usaha Anda dan kendalanya. Jika ada materi seperti logo atau foto produk, itu membantu — tapi kalaupun belum ada, kami pandu langkahnya.',
+      },
+      {
+        id: 'faq-5',
+        question: 'Apakah bisa dikerjakan bertahap?',
+        answer:
+          'Bisa. Justru itu yang sering paling masuk akal: mulai dari kebutuhan paling mendesak (misalnya katalog digital), kembangkan ke tahap berikutnya setelahnya.',
+      },
+      {
+        id: 'faq-6',
+        question: 'Apakah melayani di luar Klaten?',
+        answer:
+          'Kami berbasis di Klaten, Jawa Tengah, dan melayani konsultasi secara online untuk seluruh Indonesia.',
+      },
+    ],
+  },
   closingCta: {
     title: 'Punya Rencana untuk Bisnis Anda?',
     description:
       'Ceritakan kebutuhan dan kendala yang sedang Anda hadapi. Kita diskusikan pendekatan yang paling sesuai sebelum menentukan langkah berikutnya.',
     ctaLabel: 'Konsultasi Gratis via WhatsApp',
+  },
+  contactSection: {
+    badge: 'KONTAK',
+    title: 'Mulai Percakapan',
+    description:
+      'Ceritakan usaha Anda — jenis usaha, kendala yang dihadapi, dan hal yang ingin diperbaiki. Kami akan merespons dan mendiskusikan pendekatan yang paling masuk akal untuk kebutuhan Anda, tanpa komitmen apa pun.',
+    whatsappLabel: 'Chat WhatsApp',
+    emailLabel: 'Kirim email',
+    location: 'Klaten, Jawa Tengah — melayani konsultasi online untuk seluruh Indonesia.',
   },
   footer: {
     description:

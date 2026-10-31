@@ -4,6 +4,7 @@ import {
   isValidPhoneNumber,
   buildWhatsAppUrl,
   formatConsultationMessage,
+  formatPhoneDisplay,
 } from './whatsapp';
 import { siteConfig } from '@/config/site';
 
@@ -212,6 +213,32 @@ describe('whatsapp helper', () => {
       // Verify encoded message can be decoded back to exact original string
       const encodedPart = url!.split('?text=')[1];
       expect(decodeURIComponent(encodedPart)).toBe(message);
+    });
+  });
+
+  describe('formatPhoneDisplay', () => {
+    it('formats 12-digit Indonesian numbers in 4-4-4 pattern', () => {
+      expect(formatPhoneDisplay('6281529964902')).toBe('0815-2996-4902');
+      expect(formatPhoneDisplay('081529964902')).toBe('0815-2996-4902');
+      expect(formatPhoneDisplay('+62 815-2996-4902')).toBe('0815-2996-4902');
+    });
+
+    it('formats 11-digit Indonesian numbers in 4-4-3 pattern', () => {
+      expect(formatPhoneDisplay('08123456789')).toBe('0812-3456-789');
+      expect(formatPhoneDisplay('628123456789')).toBe('0812-3456-789');
+    });
+
+    it('formats 13-digit Indonesian numbers in 4-4-5 pattern', () => {
+      expect(formatPhoneDisplay('0815299649021')).toBe('0815-2996-49021');
+    });
+
+    it('returns empty string for invalid, placeholder, or empty phone numbers', () => {
+      expect(formatPhoneDisplay('')).toBe('');
+      expect(formatPhoneDisplay(null)).toBe('');
+      expect(formatPhoneDisplay(undefined)).toBe('');
+      expect(formatPhoneDisplay('placeholder')).toBe('');
+      expect(formatPhoneDisplay('0000000000')).toBe('');
+      expect(formatPhoneDisplay('12345')).toBe('');
     });
   });
 });

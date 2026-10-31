@@ -25,7 +25,7 @@ describe('siteConfig', () => {
     expect(siteConfig.hero.secondaryCta).toBe('Lihat Demo');
   });
 
-  it('has all 5 required navigation items with proper anchor targets', () => {
+  it('has all 7 required navigation items with proper anchor targets', () => {
     const anchors = siteConfig.navigation.map((item) => item.href);
     expect(anchors).toEqual([
       '#beranda',
@@ -33,6 +33,8 @@ describe('siteConfig', () => {
       '#demo',
       '#cara-kerja',
       '#tentang',
+      '#faq',
+      '#kontak',
     ]);
   });
 
@@ -147,10 +149,41 @@ describe('siteConfig', () => {
   it('configures closing CTA, contact email, and footer templates', () => {
     expect(siteConfig.closingCta.title).toBe('Punya Rencana untuk Bisnis Anda?');
     expect(siteConfig.closingCta.ctaLabel).toBe('Konsultasi Gratis via WhatsApp');
-    expect(siteConfig.contact.email).toBe('nalarsolusidigital@gmail.com');
     expect(siteConfig.footer.description).toBe(
       'Membantu usaha lokal menemukan dan mengembangkan solusi digital yang sesuai dengan kebutuhan bisnis.'
     );
+  });
+
+  it('configures WhatsApp prefill messages with "kebutuhan digital" positioning', () => {
+    expect(siteConfig.contact.whatsapp.defaultMessages.general).toContain('kebutuhan digital');
+    expect(siteConfig.contact.whatsapp.defaultMessages.consultation).toContain('kebutuhan digital');
+    expect(siteConfig.contact.whatsapp.defaultMessages.general).not.toContain('pembuatan website');
+    expect(siteConfig.contact.whatsapp.defaultMessages.consultation).not.toContain('kebutuhan website');
+    expect(siteConfig.contact.whatsapp.defaultMessages.emailBisnis).toBeDefined();
+  });
+
+  it('configures emailBusiness section with LPSE/SPSE angle', () => {
+    expect(siteConfig.emailBusiness.badge).toBe('EMAIL BISNIS');
+    expect(siteConfig.emailBusiness.title).toBe('Email Bisnis: Kecil, Tapi Sering Jadi Penentu');
+    expect(siteConfig.emailBusiness.benefits).toHaveLength(3);
+    expect(siteConfig.emailBusiness.importantNotice.description).toContain('LPSE/SPSE');
+    expect(siteConfig.emailBusiness.ctaLabel).toBe('Tanya tentang email bisnis');
+  });
+
+  it('configures faq section with 6 accordion questions', () => {
+    expect(siteConfig.faq.badge).toBe('FAQ');
+    expect(siteConfig.faq.title).toBe('Pertanyaan yang Sering Ditanyakan');
+    expect(siteConfig.faq.items).toHaveLength(6);
+    expect(siteConfig.faq.items[0].question).toBe('Apakah setiap usaha butuh website?');
+    expect(siteConfig.faq.items[5].question).toBe('Apakah melayani di luar Klaten?');
+  });
+
+  it('configures contactSection with WhatsApp, Email, and Klaten location', () => {
+    expect(siteConfig.contactSection.badge).toBe('KONTAK');
+    expect(siteConfig.contactSection.title).toBe('Mulai Percakapan');
+    expect(siteConfig.contactSection.location).toContain('Klaten');
+    expect(siteConfig.contactSection.whatsappLabel).toBe('Chat WhatsApp');
+    expect(siteConfig.contactSection.emailLabel).toBe('Kirim email');
   });
 });
 
