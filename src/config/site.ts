@@ -3,13 +3,20 @@ export interface NavItem {
   href: string;
 }
 
-export interface ServiceItem {
+export interface LayananItem {
   id: string;
   title: string;
   description: string;
-  shortDescription?: string;
-  capabilities: string[];
-  highlights?: string[];
+  deliverables: string[];
+  note?: string;
+  icon: string; // nama ikon lucide, dipetakan di komponen
+}
+
+export interface PaketItem {
+  id: string;
+  title: string;
+  audience: string;
+  includes: string[];
 }
 
 export interface DemoItem {
@@ -31,28 +38,17 @@ export interface WorkflowStep {
   description: string;
 }
 
-export interface PrincipleItem {
+export interface CaraKerjaPrinciple {
   title: string;
   description: string;
 }
 
-export interface EmailBusinessBenefit {
-  id: number;
-  title: string;
-  description: string;
-}
-
-export interface EmailBusinessSection {
+export interface CaraKerjaSection {
   badge: string;
   title: string;
-  lead: string;
-  benefits: EmailBusinessBenefit[];
-  importantNotice: {
-    label: string;
-    description: string;
-  };
-  closingText: string;
-  ctaLabel: string;
+  description: string;
+  principles: CaraKerjaPrinciple[];
+  steps: WorkflowStep[];
 }
 
 export interface FaqItem {
@@ -117,29 +113,24 @@ export interface SiteConfig {
     secondaryCta: string;
   };
   navigation: NavItem[];
-  servicesSection: {
+  layananSection: {
     badge: string;
     title: string;
     description: string;
+    stickyBarLabel: string;
+    ctaLabel: string;
+    emptyCtaLabel: string;
   };
-  services: ServiceItem[];
-  emailBusiness: EmailBusinessSection;
+  layanan: LayananItem[];
+  paketSectionTitle: string;
+  paket: PaketItem[];
   demoSection: {
     badge: string;
     title: string;
     description: string;
   };
   demos: DemoItem[];
-  howItWorks: {
-    title: string;
-    description: string;
-    steps: WorkflowStep[];
-  };
-  approach: {
-    title: string;
-    description: string;
-    principles: PrincipleItem[];
-  };
+  caraKerja: CaraKerjaSection;
   faq: FaqSection;
   closingCta: {
     title: string;
@@ -254,96 +245,138 @@ export const siteConfig: SiteConfig = {
     { label: 'Solusi', href: '#layanan' },
     { label: 'Demo', href: '#demo' },
     { label: 'Cara Kerja', href: '#cara-kerja' },
-    { label: 'Pendekatan', href: '#tentang' },
     { label: 'FAQ', href: '#faq' },
     { label: 'Kontak', href: '#kontak' },
   ],
-  servicesSection: {
-    badge: 'AREA SOLUSI',
-    title: 'Solusi Digital Sesuai Kebutuhan Usaha Anda',
+  layananSection: {
+    badge: 'KATALOG LAYANAN',
+    title: 'Pilih Layanan yang Anda Butuhkan',
     description:
-      'Mulai dari memperkuat kehadiran online hingga merapikan proses operasional, kami membantu usaha Anda menemukan dan mengembangkan solusi digital yang relevan. Bentuk dan cakupan pengerjaannya disesuaikan dengan kebutuhan bisnis Anda.',
+      'Centang layanan yang menarik bagi Anda, lalu tekan tombol WhatsApp — daftar pilihan Anda otomatis terkirim sebagai pesan. Tanpa harga kaku: kami sampaikan setelah memahami kebutuhan Anda.',
+    stickyBarLabel: '{n} layanan dipilih',
+    ctaLabel: 'Tanya Lebih Lanjut via WhatsApp',
+    emptyCtaLabel: 'Konsultasi Gratis',
   },
-  services: [
+  layanan: [
     {
-      id: 'kehadiran-digital',
-      title: 'Kehadiran Digital',
-      description:
-        'Membantu usaha membangun identitas dan memperkenalkan bisnisnya secara profesional melalui kanal digital.',
-      capabilities: [
-        'Website profil perusahaan.',
-        'Landing page untuk layanan atau produk.',
-        'Informasi bisnis, layanan, lokasi, dan kontak.',
+      id: 'gbp',
+      title: 'Google Business Profile',
+      description: 'Usaha Anda muncul di Google Search & Maps dengan tampilan profesional.',
+      deliverables: [
+        'Profil bisnis terverifikasi (nama, alamat, jam, foto)',
+        'Kategori & deskripsi yang tepat sasaran',
+        'Panduan mendapatkan ulasan pelanggan',
       ],
+      note: 'Audit gratis: cek kondisi profil Anda saat ini, tanpa komitmen.',
+      icon: 'MapPin',
     },
     {
-      id: 'informasi-produk-layanan',
-      title: 'Informasi Produk dan Layanan',
-      description:
-        'Membantu pelanggan menemukan, memahami, dan membandingkan produk atau layanan usaha dengan lebih mudah.',
-      capabilities: [
-        'Katalog produk atau armada.',
-        'Galeri gambar dan informasi spesifikasi.',
-        'Penyajian daftar layanan secara terstruktur.',
+      id: 'email-bisnis',
+      title: 'Email Bisnis',
+      description: 'Alamat email resmi nama@bisnisanda.com — bukan @gmail.com.',
+      deliverables: [
+        'Alamat sesuai nama usaha',
+        'Bisa dipakai di HP, laptop, aplikasi email',
+        'Alamat per fungsi (keuangan@, cs@, tender@)',
       ],
+      icon: 'Mail',
     },
     {
-      id: 'proses-pemesanan-administrasi',
-      title: 'Proses Pemesanan dan Administrasi',
+      id: 'katalog-whatsapp',
+      title: 'Katalog Digital + Order WhatsApp',
       description:
-        'Membantu menyederhanakan proses bisnis yang masih dilakukan secara manual atau kurang terstruktur.',
-      capabilities: [
-        'Formulir permintaan atau pemesanan.',
-        'Pengumpulan informasi pelanggan secara terstruktur.',
-        'Sistem administrasi berbasis web sesuai kebutuhan.',
+        'Katalog rapi yang bisa dibuka kapan saja; pesan langsung via WA — tanpa komisi marketplace.',
+      deliverables: [
+        'Katalog digital link tunggal',
+        "Tombol 'Pesan via WhatsApp' per produk",
+        'Panduan update produk sendiri',
       ],
+      icon: 'ShoppingBag',
     },
     {
-      id: 'identitas-infrastruktur-digital',
-      title: 'Identitas dan Infrastruktur Digital',
-      description:
-        'Membantu usaha membangun identitas digital dan menjaga infrastruktur online agar sesuai dengan kebutuhan bisnis.',
-      capabilities: [
-        'Email dengan domain perusahaan.',
-        'Penggunaan dan pengaturan domain bisnis.',
-        'Migrasi website ke HTTPS.',
+      id: 'website-company-profile',
+      title: 'Website Company Profile',
+      description: 'Rumah sendiri di internet dengan domain usaha Anda.',
+      deliverables: [
+        'Halaman profil, layanan, galeri, kontak',
+        'Rapi di HP maupun laptop',
+        'Terhubung ke WhatsApp & Google Maps',
       ],
+      icon: 'Globe',
+    },
+    {
+      id: 'company-profile-pdf',
+      title: 'Company Profile PDF',
+      description: 'Dokumen profil siap tender, proposal & kerja sama.',
+      deliverables: [
+        'Desain sesuai identitas usaha',
+        'Struktur lengkap: profil, layanan, pengalaman, kontak',
+      ],
+      icon: 'FileText',
+    },
+    {
+      id: 'wa-business-setup',
+      title: 'WhatsApp Business Setup',
+      description: 'WA usaha tertata: katalog, auto-reply, multi-admin.',
+      deliverables: [
+        'Katalog produk di WA Business',
+        'Sapaan & balasan otomatis',
+        'Label chat pelanggan',
+      ],
+      icon: 'MessageCircle',
+    },
+    {
+      id: 'landing-page',
+      title: 'Landing Page',
+      description: 'Satu halaman, satu tujuan: promosi, pendaftaran, atau iklan.',
+      deliverables: [
+        'Pesan tajam + tombol aksi jelas',
+        'Terhubung ke WA / formulir',
+      ],
+      icon: 'MousePointerClick',
+    },
+    {
+      id: 'sistem-administrasi',
+      title: 'Sistem Administrasi Digital',
+      description: 'Sistem custom sesuai alur kerja usaha Anda.',
+      deliverables: [
+        'Pencatatan & alur kerja disesuaikan',
+        'Bukan software jadi yang dipaksakan',
+      ],
+      note: 'Butuh diskusi mendalam dulu — kami kerjakan hanya jika ini memang solusi paling masuk akal.',
+      icon: 'ClipboardList',
     },
   ],
-  emailBusiness: {
-    badge: 'EMAIL BISNIS',
-    title: 'Email Bisnis: Kecil, Tapi Sering Jadi Penentu',
-    lead:
-      'Alamat email adalah hal pertama yang dilihat calon pelanggan dan mitra dari bisnis Anda. Email dengan domain perusahaan sendiri memberi tiga hal sekaligus:',
-    benefits: [
-      {
-        id: 1,
-        title: 'Kredibilitas instan.',
-        description:
-          'nama@usahaanda.com terlihat jauh lebih serius daripada usahaanda123@gmail.com — terutama di mata pelanggan baru dan mitra korporat.',
-      },
-      {
-        id: 2,
-        title: 'Aset yang tinggal.',
-        description:
-          'Email tetap milik usaha meski karyawan berganti. Tidak ada lagi kontak pelanggan yang ikut pergi bersama mantan admin.',
-      },
-      {
-        id: 3,
-        title: 'Alamat per fungsi.',
-        description:
-          'Pisahkan urusan dengan rapi: cs@ untuk layanan pelanggan, order@ untuk pemesanan, keuangan@ untuk administrasi.',
-      },
-    ],
-    importantNotice: {
-      label: 'Penting untuk diketahui:',
-      description:
-        'usaha yang mengikuti pengadaan barang/jasa pemerintah (LPSE/SPSE) wajib menggunakan email resmi perusahaan sebagai syarat administrasi. Tanpa email domain sendiri, proses pendaftaran bisa terhenti sebelum mulai.',
+  paketSectionTitle: 'Atau pilih paket siap pakai',
+  paket: [
+    {
+      id: 'paket-tender',
+      title: 'Paket Siap Tender',
+      audience: 'Kontraktor & konsultan',
+      includes: [
+        'Email bisnis',
+        'Google Business Profile',
+        'Website company profile',
+        'Company profile PDF',
+      ],
     },
-    closingText:
-      'Kami bantu menyiapkan email bisnis Anda dari nol — domain, pengaturan, sampai siap dipakai.',
-    ctaLabel: 'Tanya tentang email bisnis',
-  },
+    {
+      id: 'paket-kuliner',
+      title: 'Paket Kuliner Online',
+      audience: 'Makanan & minuman',
+      includes: [
+        'Katalog digital',
+        'Pemesanan via WhatsApp',
+        'Google Business Profile',
+      ],
+    },
+    {
+      id: 'paket-korporat',
+      title: 'Paket Kepercayaan Korporat',
+      audience: 'Konveksi, manufaktur & jasa B2B',
+      includes: ['Katalog digital', 'Website company profile'],
+    },
+  ],
   demoSection: {
     badge: 'DEMO INTERAKTIF',
     title: 'Jelajahi Demo Interaktif',
@@ -388,32 +421,11 @@ export const siteConfig: SiteConfig = {
       previewImage: '/images/demos/rental-preview.png',
     },
   ],
-  howItWorks: {
+  caraKerja: {
+    badge: 'CARA KERJA',
     title: 'Dimulai dari Memahami Kebutuhan',
     description:
-      'Kami ingin solusi yang dibangun benar-benar sesuai dengan kebutuhan usaha Anda. Karena itu, prosesnya dimulai dengan percakapan sebelum masuk ke pengerjaan.',
-    steps: [
-      {
-        step: 1,
-        title: 'Konsultasi',
-        description: 'Ceritakan jenis usaha, kendala yang dihadapi, dan hal yang ingin diperbaiki.',
-      },
-      {
-        step: 2,
-        title: 'Menentukan Solusi',
-        description: 'Kami memetakan kebutuhan dan menyepakati bentuk solusi serta ruang lingkup pengerjaannya.',
-      },
-      {
-        step: 3,
-        title: 'Pengerjaan Solusi',
-        description: 'Solusi yang disepakati kami kerjakan, kemudian hasilnya ditinjau bersama Anda sebelum digunakan.',
-      },
-    ],
-  },
-  approach: {
-    title: 'Tidak Semua Usaha Membutuhkan Solusi yang Sama',
-    description:
-      'Setiap usaha memiliki kebutuhan dan tantangan yang berbeda. Karena itu, kami tidak langsung menawarkan solusi atau fitur tertentu. Kami berusaha memahami cara kerja, kendala, dan tujuan bisnis Anda terlebih dahulu agar solusi yang dipilih benar-benar relevan.',
+      'Setiap usaha memiliki kebutuhan dan tantangan yang berbeda. Karena itu, kami tidak langsung menawarkan solusi atau fitur tertentu. Kami berusaha memahami cara kerja, kendala, dan tujuan bisnis Anda terlebih dahulu agar solusi yang dipilih benar-benar relevan. Prosesnya berjalan dalam tiga langkah berikut.',
     principles: [
       {
         title: 'Pahami Kebutuhan',
@@ -421,11 +433,33 @@ export const siteConfig: SiteConfig = {
       },
       {
         title: 'Tentukan Prioritas',
-        description: 'Utamakan hal yang benar-benar dibutuhkan, bukan menambahkan solusi yang tidak perlu.',
+        description:
+          'Utamakan hal yang benar-benar dibutuhkan, bukan menambahkan solusi yang tidak perlu.',
       },
       {
         title: 'Kerjakan Sesuai Kesepakatan',
-        description: 'Ruang lingkup dan proses pengerjaan disepakati sebelum pekerjaan dimulai.',
+        description:
+          'Ruang lingkup dan proses pengerjaan disepakati sebelum pekerjaan dimulai.',
+      },
+    ],
+    steps: [
+      {
+        step: 1,
+        title: 'Konsultasi',
+        description:
+          'Ceritakan jenis usaha, kendala yang dihadapi, dan hal yang ingin diperbaiki.',
+      },
+      {
+        step: 2,
+        title: 'Menentukan Solusi',
+        description:
+          'Kami memetakan kebutuhan dan menyepakati bentuk solusi serta ruang lingkup pengerjaannya.',
+      },
+      {
+        step: 3,
+        title: 'Pengerjaan Solusi',
+        description:
+          'Solusi yang disepakati kami kerjakan, kemudian hasilnya ditinjau bersama Anda sebelum digunakan.',
       },
     ],
   },

@@ -5,6 +5,7 @@ import {
   buildWhatsAppUrl,
   formatConsultationMessage,
   formatPhoneDisplay,
+  formatLayananPickerMessage,
 } from './whatsapp';
 import { siteConfig } from '@/config/site';
 
@@ -213,6 +214,36 @@ describe('whatsapp helper', () => {
       // Verify encoded message can be decoded back to exact original string
       const encodedPart = url!.split('?text=')[1];
       expect(decodeURIComponent(encodedPart)).toBe(message);
+    });
+  });
+
+  describe('formatLayananPickerMessage', () => {
+    it('formats bullet list of selected service titles', () => {
+      const titles = ['Google Business Profile', 'Email Bisnis'];
+      const message = formatLayananPickerMessage(titles);
+
+      expect(message).toBe(
+        'Halo Nalar Solusi Digital! Saya tertarik dengan layanan berikut:\n' +
+          '- Google Business Profile\n' +
+          '- Email Bisnis\n\n' +
+          'Bisa info lebih lanjut? Terima kasih.'
+      );
+    });
+
+    it('trims whitespace on each item title', () => {
+      const titles = ['   Website Company Profile   ', '  Landing Page  '];
+      const message = formatLayananPickerMessage(titles);
+
+      expect(message).toContain('- Website Company Profile');
+      expect(message).toContain('- Landing Page');
+      expect(message).not.toContain('-    Website');
+    });
+
+    it('handles empty selections safely', () => {
+      const message = formatLayananPickerMessage([]);
+      expect(message).toBe(
+        'Halo Nalar Solusi Digital! Saya tertarik dengan layanan berikut:\n\nBisa info lebih lanjut? Terima kasih.'
+      );
     });
   });
 

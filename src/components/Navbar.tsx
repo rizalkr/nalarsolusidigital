@@ -70,7 +70,7 @@ export function Navbar() {
               </a>
             ) : (
               <a
-                href="#tentang"
+                href="#cara-kerja"
                 title="Saluran konsultasi WhatsApp sedang dipersiapkan"
                 className="inline-flex items-center justify-center px-4 py-2.5 text-sm font-medium text-white bg-brand-primary hover:bg-brand-primary/90 rounded-lg shadow-sm focus-visible:outline-brand-accent transition-colors"
               >

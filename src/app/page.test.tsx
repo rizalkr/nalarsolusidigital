@@ -27,15 +27,11 @@ describe('HomePage (Full Narrative Composition)', () => {
     const demoSection = container.querySelector('section#demo');
     expect(demoSection).toBeInTheDocument();
 
-    // Section 4: How It Works (#cara-kerja)
-    const howItWorksSection = container.querySelector('section#cara-kerja');
-    expect(howItWorksSection).toBeInTheDocument();
+    // Section 4: Cara Kerja (#cara-kerja)
+    const caraKerjaSection = container.querySelector('section#cara-kerja');
+    expect(caraKerjaSection).toBeInTheDocument();
 
-    // Section 5: Approach (#tentang)
-    const approachSection = container.querySelector('section#tentang');
-    expect(approachSection).toBeInTheDocument();
-
-    // Section 6: Closing CTA
+    // Section 5: Closing CTA
     const ctaHeading = screen.getByRole('heading', {
       level: 2,
       name: siteConfig.closingCta.title,
@@ -46,7 +42,7 @@ describe('HomePage (Full Narrative Composition)', () => {
     const footer = container.querySelector('footer');
     expect(footer).toBeInTheDocument();
 
-    // Verify DOM sequence: Header -> Hero -> Services -> EmailBisnis -> Demos -> HowItWorks -> Approach -> FAQ -> CTA -> Kontak -> Footer
+    // Verify DOM sequence: Header -> Hero -> Services -> Demos -> CaraKerja -> FAQ -> CTA -> Kontak -> Footer
     const sections = Array.from(container.querySelectorAll('header, section, footer'));
     const tagNames = sections.map((el) => {
       if (el.tagName.toLowerCase() === 'header') return 'header';
@@ -58,10 +54,8 @@ describe('HomePage (Full Narrative Composition)', () => {
       'header',
       'section#beranda',
       'section#layanan',
-      'section#email-bisnis',
       'section#demo',
       'section#cara-kerja',
-      'section#tentang',
       'section#faq',
       'section[cta]',
       'section#kontak',
@@ -79,15 +73,13 @@ describe('HomePage (Full Narrative Composition)', () => {
 
     // Section h2 headings across the full page
     const h2Headings = screen.getAllByRole('heading', { level: 2 });
-    expect(h2Headings.length).toBe(8);
-    expect(h2Headings[0]).toHaveTextContent('Solusi Digital Sesuai Kebutuhan Usaha Anda');
-    expect(h2Headings[1]).toHaveTextContent(siteConfig.emailBusiness.title);
-    expect(h2Headings[2]).toHaveTextContent('Jelajahi Demo Interaktif');
-    expect(h2Headings[3]).toHaveTextContent(siteConfig.howItWorks.title);
-    expect(h2Headings[4]).toHaveTextContent(siteConfig.approach.title);
-    expect(h2Headings[5]).toHaveTextContent(siteConfig.faq.title);
-    expect(h2Headings[6]).toHaveTextContent(siteConfig.closingCta.title);
-    expect(h2Headings[7]).toHaveTextContent(siteConfig.contactSection.title);
+    expect(h2Headings.length).toBe(6);
+    expect(h2Headings[0]).toHaveTextContent(siteConfig.layananSection.title);
+    expect(h2Headings[1]).toHaveTextContent('Jelajahi Demo Interaktif');
+    expect(h2Headings[2]).toHaveTextContent(siteConfig.caraKerja.title);
+    expect(h2Headings[3]).toHaveTextContent(siteConfig.faq.title);
+    expect(h2Headings[4]).toHaveTextContent(siteConfig.closingCta.title);
+    expect(h2Headings[5]).toHaveTextContent(siteConfig.contactSection.title);
   });
 
   it('renders the mandatory tagline verbatim in the Hero section and Footer', () => {
@@ -108,33 +100,34 @@ describe('HomePage (Full Narrative Composition)', () => {
     expect(emojiRegex.test(pageText)).toBe(false);
   });
 
-  it('provides h3 headings for service cards, email business benefits, demo cards, steps, principles, and faq questions', () => {
+  it('provides h3 headings for service cards, paket options, demo cards, steps, principles, and faq questions', () => {
     render(<HomePage />);
 
     const h3Headings = screen.getAllByRole('heading', { level: 3 });
-    // Services (4) + EmailBusiness (3) + Demos (2) + HowItWorks (3) + Approach (3) + Faq (6) = 21 h3 headings
-    expect(h3Headings).toHaveLength(21);
+    // Layanan (8) + Paket Section (1) + Paket Cards (3) + Demos (2) + HowItWorks (3) + Approach (3) + Faq (6) = 26 h3 headings
+    expect(h3Headings).toHaveLength(26);
 
     const h3Texts = h3Headings.map((h) => h.textContent);
-    // Services
-    siteConfig.services.forEach((s) => {
-      expect(h3Texts).toContain(s.title);
+    // Layanan
+    siteConfig.layanan.forEach((l) => {
+      expect(h3Texts).toContain(l.title);
     });
-    // Email Business
-    siteConfig.emailBusiness.benefits.forEach((b) => {
-      expect(h3Texts).toContain(b.title);
+    // Paket section title & paket cards
+    expect(h3Texts).toContain(siteConfig.paketSectionTitle);
+    siteConfig.paket.forEach((p) => {
+      expect(h3Texts).toContain(p.title);
     });
     // Demos
     siteConfig.demos.forEach((d) => {
       expect(h3Texts).toContain(d.title);
     });
-    // HowItWorks
-    siteConfig.howItWorks.steps.forEach((step) => {
-      expect(h3Texts).toContain(`Langkah ${step.step}: ${step.title}`);
-    });
-    // Approach
-    siteConfig.approach.principles.forEach((p) => {
+    // CaraKerja Principles
+    siteConfig.caraKerja.principles.forEach((p) => {
       expect(h3Texts).toContain(p.title);
+    });
+    // CaraKerja Steps
+    siteConfig.caraKerja.steps.forEach((step) => {
+      expect(h3Texts).toContain(`Langkah ${step.step}: ${step.title}`);
     });
     // Faq
     siteConfig.faq.items.forEach((item, index) => {

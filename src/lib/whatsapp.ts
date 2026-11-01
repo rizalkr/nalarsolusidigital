@@ -179,6 +179,20 @@ export function formatConsultationMessage(data: ConsultationFormData): string {
 }
 
 /**
+ * Formats the service-picker selection into a WhatsApp message.
+ * Lists each selected service/package title as a bullet.
+ */
+export function formatLayananPickerMessage(selectedTitles: string[]): string {
+  const lines = [
+    'Halo Nalar Solusi Digital! Saya tertarik dengan layanan berikut:',
+    ...selectedTitles.map((t) => `- ${t.trim()}`),
+    '',
+    'Bisa info lebih lanjut? Terima kasih.',
+  ];
+  return lines.join('\n');
+}
+
+/**
  * Formats a phone number for local Indonesian display: 08xx-xxxx-xxxx (4-4-remainder).
  * Converts international format (628xx) to local (08xx).
  * Returns empty string if the number is invalid or empty.

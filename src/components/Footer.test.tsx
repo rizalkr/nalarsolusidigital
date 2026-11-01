@@ -35,13 +35,12 @@ describe('Footer Component', () => {
     expect(nav).toBeInTheDocument();
   });
 
-  it('renders all 6 navigation anchors derived from siteConfig: #layanan, #demo, #cara-kerja, #tentang, #faq, #kontak', () => {
+  it('renders all 5 navigation anchors derived from siteConfig: #layanan, #demo, #cara-kerja, #faq, #kontak', () => {
     render(<Footer />);
     const expectedAnchors = [
       { text: 'Solusi', href: '#layanan' },
       { text: 'Demo', href: '#demo' },
       { text: 'Cara Kerja', href: '#cara-kerja' },
-      { text: 'Pendekatan', href: '#tentang' },
       { text: 'FAQ', href: '#faq' },
       { text: 'Kontak', href: '#kontak' },
     ];

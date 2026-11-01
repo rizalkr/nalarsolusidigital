@@ -22,7 +22,6 @@ describe('Navbar Component', () => {
       { text: 'Solusi', href: '#layanan' },
       { text: 'Demo', href: '#demo' },
       { text: 'Cara Kerja', href: '#cara-kerja' },
-      { text: 'Pendekatan', href: '#tentang' },
       { text: 'FAQ', href: '#faq' },
       { text: 'Kontak', href: '#kontak' },
     ];
@@ -42,7 +41,7 @@ describe('Navbar Component', () => {
     render(<Navbar />);
     const ctaLinks = screen.getAllByRole('link', { name: /Konsultasi Gratis/i });
     expect(ctaLinks.length).toBeGreaterThan(0);
-    expect(ctaLinks[0]).toHaveAttribute('href', '#tentang');
+    expect(ctaLinks[0]).toHaveAttribute('href', '#cara-kerja');
 
     siteConfig.contact.email = originalEmail;
     spy.mockRestore();

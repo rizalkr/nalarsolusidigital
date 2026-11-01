@@ -25,14 +25,13 @@ describe('siteConfig', () => {
     expect(siteConfig.hero.secondaryCta).toBe('Lihat Demo');
   });
 
-  it('has all 7 required navigation items with proper anchor targets', () => {
+  it('has all 6 required navigation items with proper anchor targets', () => {
     const anchors = siteConfig.navigation.map((item) => item.href);
     expect(anchors).toEqual([
       '#beranda',
       '#layanan',
       '#demo',
       '#cara-kerja',
-      '#tentang',
       '#faq',
       '#kontak',
     ]);
@@ -58,45 +57,46 @@ describe('siteConfig', () => {
     expect(siteConfig.logo.portrait.alt).toBe('Nalar Solusi Digital');
   });
 
-  it('configures servicesSection and 4 solution areas', () => {
-    expect(siteConfig.servicesSection.badge).toBe('AREA SOLUSI');
-    expect(siteConfig.servicesSection.title).toBe('Solusi Digital Sesuai Kebutuhan Usaha Anda');
-    expect(siteConfig.servicesSection.description).toContain(
-      'Mulai dari memperkuat kehadiran online hingga merapikan proses operasional'
-    );
+  it('configures layananSection, 8 concrete layanan items, and 3 paket items with unique ids and titles', () => {
+    expect(siteConfig.layananSection.badge).toBe('KATALOG LAYANAN');
+    expect(siteConfig.layananSection.title).toBe('Pilih Layanan yang Anda Butuhkan');
+    expect(siteConfig.layananSection.stickyBarLabel).toBe('{n} layanan dipilih');
+    expect(siteConfig.layananSection.ctaLabel).toBe('Tanya Lebih Lanjut via WhatsApp');
+    expect(siteConfig.layananSection.emptyCtaLabel).toBe('Konsultasi Gratis');
 
-    expect(siteConfig.services).toHaveLength(4);
-    const serviceMap = Object.fromEntries(
-      siteConfig.services.map((s) => [s.id, s])
-    );
+    // 8 Layanan items
+    expect(siteConfig.layanan).toHaveLength(8);
+    const layananIds = siteConfig.layanan.map((l) => l.id);
+    const layananTitles = siteConfig.layanan.map((l) => l.title);
+    expect(new Set(layananIds).size).toBe(8);
+    expect(new Set(layananTitles).size).toBe(8);
 
-    expect(serviceMap['kehadiran-digital']).toBeDefined();
-    expect(serviceMap['kehadiran-digital'].title).toBe('Kehadiran Digital');
-    expect(serviceMap['kehadiran-digital'].description).toBe(
-      'Membantu usaha membangun identitas dan memperkenalkan bisnisnya secara profesional melalui kanal digital.'
-    );
-    expect(serviceMap['kehadiran-digital'].capabilities).toContain('Website profil perusahaan.');
+    siteConfig.layanan.forEach((l) => {
+      expect(l.id).toBeTruthy();
+      expect(l.title).toBeTruthy();
+      expect(l.description).toBeTruthy();
+      expect(l.deliverables.length).toBeGreaterThan(0);
+      expect(l.icon).toBeTruthy();
+    });
 
-    expect(serviceMap['informasi-produk-layanan']).toBeDefined();
-    expect(serviceMap['informasi-produk-layanan'].title).toBe('Informasi Produk dan Layanan');
-    expect(serviceMap['informasi-produk-layanan'].description).toBe(
-      'Membantu pelanggan menemukan, memahami, dan membandingkan produk atau layanan usaha dengan lebih mudah.'
-    );
-    expect(serviceMap['informasi-produk-layanan'].capabilities).toContain('Katalog produk atau armada.');
+    // 3 Paket items
+    expect(siteConfig.paketSectionTitle).toBe('Atau pilih paket siap pakai');
+    expect(siteConfig.paket).toHaveLength(3);
+    const paketIds = siteConfig.paket.map((p) => p.id);
+    const paketTitles = siteConfig.paket.map((p) => p.title);
+    expect(new Set(paketIds).size).toBe(3);
+    expect(new Set(paketTitles).size).toBe(3);
 
-    expect(serviceMap['proses-pemesanan-administrasi']).toBeDefined();
-    expect(serviceMap['proses-pemesanan-administrasi'].title).toBe('Proses Pemesanan dan Administrasi');
-    expect(serviceMap['proses-pemesanan-administrasi'].description).toBe(
-      'Membantu menyederhanakan proses bisnis yang masih dilakukan secara manual atau kurang terstruktur.'
-    );
-    expect(serviceMap['proses-pemesanan-administrasi'].capabilities).toContain('Formulir permintaan atau pemesanan.');
+    siteConfig.paket.forEach((p) => {
+      expect(p.id).toBeTruthy();
+      expect(p.title).toBeTruthy();
+      expect(p.audience).toBeTruthy();
+      expect(p.includes.length).toBeGreaterThan(0);
+    });
 
-    expect(serviceMap['identitas-infrastruktur-digital']).toBeDefined();
-    expect(serviceMap['identitas-infrastruktur-digital'].title).toBe('Identitas dan Infrastruktur Digital');
-    expect(serviceMap['identitas-infrastruktur-digital'].description).toBe(
-      'Membantu usaha membangun identitas digital dan menjaga infrastruktur online agar sesuai dengan kebutuhan bisnis.'
-    );
-    expect(serviceMap['identitas-infrastruktur-digital'].capabilities).toContain('Email dengan domain perusahaan.');
+    // No hardcoded prices anywhere
+    const fullJson = JSON.stringify({ layanan: siteConfig.layanan, paket: siteConfig.paket });
+    expect(fullJson).not.toMatch(/Rp|IDR|\b\d{1,3}\.\d{3}\b/);
   });
 
   it('configures 2 interactive demos with proper badges and CTA labels', () => {
@@ -120,30 +120,27 @@ describe('siteConfig', () => {
     expect(rental.features).toContain('Layanan rental');
   });
 
-  it('configures 3 steps for Cara Kerja per updated copywriting', () => {
-    expect(siteConfig.howItWorks.steps).toHaveLength(3);
-    expect(siteConfig.howItWorks.steps[0].title).toBe('Konsultasi');
-    expect(siteConfig.howItWorks.steps[0].description).toBe(
-      'Ceritakan jenis usaha, kendala yang dihadapi, dan hal yang ingin diperbaiki.'
+  it('configures caraKerja section with badge, title, opener, principles, and steps', () => {
+    expect(siteConfig.caraKerja.badge).toBe('CARA KERJA');
+    expect(siteConfig.caraKerja.title).toBe('Dimulai dari Memahami Kebutuhan');
+    expect(siteConfig.caraKerja.description).toBe(
+      'Setiap usaha memiliki kebutuhan dan tantangan yang berbeda. Karena itu, kami tidak langsung menawarkan solusi atau fitur tertentu. Kami berusaha memahami cara kerja, kendala, dan tujuan bisnis Anda terlebih dahulu agar solusi yang dipilih benar-benar relevan. Prosesnya berjalan dalam tiga langkah berikut.'
     );
-    expect(siteConfig.howItWorks.steps[1].title).toBe('Menentukan Solusi');
-    expect(siteConfig.howItWorks.steps[1].description).toBe(
-      'Kami memetakan kebutuhan dan menyepakati bentuk solusi serta ruang lingkup pengerjaannya.'
-    );
-    expect(siteConfig.howItWorks.steps[2].title).toBe('Pengerjaan Solusi');
-    expect(siteConfig.howItWorks.steps[2].description).toBe(
-      'Solusi yang disepakati kami kerjakan, kemudian hasilnya ditinjau bersama Anda sebelum digunakan.'
-    );
-  });
 
-  it('configures 3 guiding principles for Pendekatan Nalar per latest specifications', () => {
-    expect(siteConfig.approach.principles).toHaveLength(3);
-    const titles = siteConfig.approach.principles.map((p) => p.title);
-    expect(titles).toEqual([
+    // 3 Principles
+    expect(siteConfig.caraKerja.principles).toHaveLength(3);
+    const principleTitles = siteConfig.caraKerja.principles.map((p) => p.title);
+    expect(principleTitles).toEqual([
       'Pahami Kebutuhan',
       'Tentukan Prioritas',
       'Kerjakan Sesuai Kesepakatan',
     ]);
+
+    // 3 Steps
+    expect(siteConfig.caraKerja.steps).toHaveLength(3);
+    expect(siteConfig.caraKerja.steps[0].title).toBe('Konsultasi');
+    expect(siteConfig.caraKerja.steps[1].title).toBe('Menentukan Solusi');
+    expect(siteConfig.caraKerja.steps[2].title).toBe('Pengerjaan Solusi');
   });
 
   it('configures closing CTA, contact email, and footer templates', () => {
@@ -160,14 +157,6 @@ describe('siteConfig', () => {
     expect(siteConfig.contact.whatsapp.defaultMessages.general).not.toContain('pembuatan website');
     expect(siteConfig.contact.whatsapp.defaultMessages.consultation).not.toContain('kebutuhan website');
     expect(siteConfig.contact.whatsapp.defaultMessages.emailBisnis).toBeDefined();
-  });
-
-  it('configures emailBusiness section with LPSE/SPSE angle', () => {
-    expect(siteConfig.emailBusiness.badge).toBe('EMAIL BISNIS');
-    expect(siteConfig.emailBusiness.title).toBe('Email Bisnis: Kecil, Tapi Sering Jadi Penentu');
-    expect(siteConfig.emailBusiness.benefits).toHaveLength(3);
-    expect(siteConfig.emailBusiness.importantNotice.description).toContain('LPSE/SPSE');
-    expect(siteConfig.emailBusiness.ctaLabel).toBe('Tanya tentang email bisnis');
   });
 
   it('configures faq section with 6 accordion questions', () => {

@@ -198,7 +198,7 @@ export function MobileNav({
             </a>
           ) : (
             <a
-              href="#tentang"
+              href="#cara-kerja"
               onClick={handleLinkClick}
               title="Saluran konsultasi WhatsApp sedang dipersiapkan"
               className="w-full inline-flex items-center justify-center px-4 py-3.5 bg-brand-primary text-white font-semibold rounded-xl hover:bg-brand-primary/90 focus-visible:outline-brand-accent transition-all shadow-md active:scale-[0.98]"
