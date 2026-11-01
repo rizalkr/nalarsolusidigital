@@ -117,6 +117,10 @@ export interface SiteConfig {
     badge: string;
     title: string;
     description: string;
+    tileHint: string;
+    modalSelectLabel: string;
+    modalSelectedLabel: string;
+    modalCloseLabel: string;
     stickyBarLabel: string;
     ctaLabel: string;
     emptyCtaLabel: string;
@@ -132,12 +136,7 @@ export interface SiteConfig {
   demos: DemoItem[];
   caraKerja: CaraKerjaSection;
   faq: FaqSection;
-  closingCta: {
-    title: string;
-    description: string;
-    ctaLabel: string;
-  };
-  contactSection: ContactSection;
+  kontak: ContactSection;
   footer: {
     description: string;
     copyrightTemplate: string;
@@ -238,7 +237,7 @@ export const siteConfig: SiteConfig = {
       'Kami membantu usaha lokal menemukan dan mengembangkan solusi digital yang sesuai dengan kebutuhan bisnis, mulai dari website, katalog online, email bisnis, hingga sistem administrasi.',
     tagline: 'Ceritakan usaha Anda, kami bantu carikan solusi yang paling masuk akal.',
     primaryCta: 'Konsultasi Gratis',
-    secondaryCta: 'Lihat Demo',
+    secondaryCta: 'Lihat Solusi',
   },
   navigation: [
     { label: 'Beranda', href: '#beranda' },
@@ -252,7 +251,11 @@ export const siteConfig: SiteConfig = {
     badge: 'KATALOG LAYANAN',
     title: 'Pilih Layanan yang Anda Butuhkan',
     description:
-      'Centang layanan yang menarik bagi Anda, lalu tekan tombol WhatsApp — daftar pilihan Anda otomatis terkirim sebagai pesan. Tanpa harga kaku: kami sampaikan setelah memahami kebutuhan Anda.',
+      'Klik setiap layanan untuk melihat detailnya, centang yang Anda butuhkan, lalu tekan tombol WhatsApp — daftar pilihan Anda otomatis terkirim sebagai pesan. Tanpa harga kaku: kami sampaikan setelah memahami kebutuhan Anda.',
+    tileHint: 'Klik untuk detail',
+    modalSelectLabel: 'Pilih layanan ini',
+    modalSelectedLabel: 'Dipilih — batalkan',
+    modalCloseLabel: 'Tutup',
     stickyBarLabel: '{n} layanan dipilih',
     ctaLabel: 'Tanya Lebih Lanjut via WhatsApp',
     emptyCtaLabel: 'Konsultasi Gratis',
@@ -505,17 +508,11 @@ export const siteConfig: SiteConfig = {
       },
     ],
   },
-  closingCta: {
+  kontak: {
+    badge: 'KONTAK',
     title: 'Punya Rencana untuk Bisnis Anda?',
     description:
-      'Ceritakan kebutuhan dan kendala yang sedang Anda hadapi. Kita diskusikan pendekatan yang paling sesuai sebelum menentukan langkah berikutnya.',
-    ctaLabel: 'Konsultasi Gratis via WhatsApp',
-  },
-  contactSection: {
-    badge: 'KONTAK',
-    title: 'Mulai Percakapan',
-    description:
-      'Ceritakan usaha Anda — jenis usaha, kendala yang dihadapi, dan hal yang ingin diperbaiki. Kami akan merespons dan mendiskusikan pendekatan yang paling masuk akal untuk kebutuhan Anda, tanpa komitmen apa pun.',
+      'Ceritakan usaha Anda — jenis usaha, kendala yang dihadapi, dan hal yang ingin diperbaiki. Kita diskusikan pendekatan yang paling sesuai sebelum menentukan langkah berikutnya, tanpa komitmen apa pun.',
     whatsappLabel: 'Chat WhatsApp',
     emailLabel: 'Kirim email',
     location: 'Klaten, Jawa Tengah — melayani konsultasi online untuk seluruh Indonesia.',

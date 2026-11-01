@@ -11,15 +11,15 @@ describe('Contact Component', () => {
     expect(section).toBeInTheDocument();
     expect(section).toHaveAttribute('aria-labelledby', 'contact-heading');
 
-    const heading = screen.getByRole('heading', { level: 2, name: siteConfig.contactSection.title });
+    const heading = screen.getByRole('heading', { level: 2, name: siteConfig.kontak.title });
     expect(heading).toBeInTheDocument();
   });
 
   it('renders badge, description, and location verbatim from specifications', () => {
     render(<Contact />);
-    expect(screen.getByText(siteConfig.contactSection.badge)).toBeInTheDocument();
-    expect(screen.getByText(siteConfig.contactSection.description)).toBeInTheDocument();
-    expect(screen.getByText(siteConfig.contactSection.location)).toBeInTheDocument();
+    expect(screen.getByText(siteConfig.kontak.badge)).toBeInTheDocument();
+    expect(screen.getByText(siteConfig.kontak.description)).toBeInTheDocument();
+    expect(screen.getByText(siteConfig.kontak.location)).toBeInTheDocument();
   });
 
   it('formats WhatsApp phone number for display (08xx-xxxx-xxxx) with click-to-chat link', () => {
@@ -62,5 +62,17 @@ describe('Contact Component', () => {
 
     siteConfig.contact.email = originalEmail;
   });
-});
 
+  it('uses Navy background (bg-brand-primary) and white text', () => {
+    const { container } = render(<Contact />);
+    const section = container.querySelector('section#kontak');
+    expect(section).toHaveClass('bg-brand-primary', 'text-white');
+  });
+
+  it('contains zero emoticons or emojis in the rendered markup', () => {
+    const { container } = render(<Contact />);
+    const text = container.textContent || '';
+    const emojiRegex = /[\u{1F300}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{1F1E0}-\u{1F1FF}\u{1F600}-\u{1F64F}\u{1F680}-\u{1F6FF}]/u;
+    expect(emojiRegex.test(text)).toBe(false);
+  });
+});

@@ -49,15 +49,15 @@ describe('Hero Component', () => {
     expect(ctaIndex).toBeGreaterThan(taglineIndex);
   });
 
-  it('renders primary CTA button (Konsultasi Gratis) and secondary CTA (Lihat Demo)', () => {
+  it('renders primary CTA button (Konsultasi Gratis) and secondary CTA (Lihat Solusi)', () => {
     render(<Hero />);
     const primaryCta = screen.getByRole('button', { name: new RegExp(siteConfig.hero.primaryCta, 'i') });
     expect(primaryCta).toBeInTheDocument();
 
     const secondaryCta = screen.getByRole('link', { name: new RegExp(siteConfig.hero.secondaryCta, 'i') });
     expect(secondaryCta).toBeInTheDocument();
-    expect(secondaryCta).toHaveTextContent('Lihat Demo');
-    expect(secondaryCta).toHaveAttribute('href', '#contoh-solusi');
+    expect(secondaryCta).toHaveTextContent('Lihat Solusi');
+    expect(secondaryCta).toHaveAttribute('href', '#layanan');
   });
 
   it('triggers the consultation modal when primary CTA is clicked', () => {

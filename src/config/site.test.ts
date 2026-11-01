@@ -22,7 +22,7 @@ describe('siteConfig', () => {
     );
     expect(siteConfig.hero.tagline).toBe(siteConfig.tagline);
     expect(siteConfig.hero.primaryCta).toBe('Konsultasi Gratis');
-    expect(siteConfig.hero.secondaryCta).toBe('Lihat Demo');
+    expect(siteConfig.hero.secondaryCta).toBe('Lihat Solusi');
   });
 
   it('has all 6 required navigation items with proper anchor targets', () => {
@@ -60,6 +60,10 @@ describe('siteConfig', () => {
   it('configures layananSection, 8 concrete layanan items, and 3 paket items with unique ids and titles', () => {
     expect(siteConfig.layananSection.badge).toBe('KATALOG LAYANAN');
     expect(siteConfig.layananSection.title).toBe('Pilih Layanan yang Anda Butuhkan');
+    expect(siteConfig.layananSection.tileHint).toBe('Klik untuk detail');
+    expect(siteConfig.layananSection.modalSelectLabel).toBe('Pilih layanan ini');
+    expect(siteConfig.layananSection.modalSelectedLabel).toBe('Dipilih — batalkan');
+    expect(siteConfig.layananSection.modalCloseLabel).toBe('Tutup');
     expect(siteConfig.layananSection.stickyBarLabel).toBe('{n} layanan dipilih');
     expect(siteConfig.layananSection.ctaLabel).toBe('Tanya Lebih Lanjut via WhatsApp');
     expect(siteConfig.layananSection.emptyCtaLabel).toBe('Konsultasi Gratis');
@@ -143,9 +147,7 @@ describe('siteConfig', () => {
     expect(siteConfig.caraKerja.steps[2].title).toBe('Pengerjaan Solusi');
   });
 
-  it('configures closing CTA, contact email, and footer templates', () => {
-    expect(siteConfig.closingCta.title).toBe('Punya Rencana untuk Bisnis Anda?');
-    expect(siteConfig.closingCta.ctaLabel).toBe('Konsultasi Gratis via WhatsApp');
+  it('configures contact email and footer templates', () => {
     expect(siteConfig.footer.description).toBe(
       'Membantu usaha lokal menemukan dan mengembangkan solusi digital yang sesuai dengan kebutuhan bisnis.'
     );
@@ -167,12 +169,15 @@ describe('siteConfig', () => {
     expect(siteConfig.faq.items[5].question).toBe('Apakah melayani di luar Klaten?');
   });
 
-  it('configures contactSection with WhatsApp, Email, and Klaten location', () => {
-    expect(siteConfig.contactSection.badge).toBe('KONTAK');
-    expect(siteConfig.contactSection.title).toBe('Mulai Percakapan');
-    expect(siteConfig.contactSection.location).toContain('Klaten');
-    expect(siteConfig.contactSection.whatsappLabel).toBe('Chat WhatsApp');
-    expect(siteConfig.contactSection.emailLabel).toBe('Kirim email');
+  it('configures kontak section with WhatsApp, Email, and Klaten location', () => {
+    expect(siteConfig.kontak.badge).toBe('KONTAK');
+    expect(siteConfig.kontak.title).toBe('Punya Rencana untuk Bisnis Anda?');
+    expect(siteConfig.kontak.description).toBe(
+      'Ceritakan usaha Anda — jenis usaha, kendala yang dihadapi, dan hal yang ingin diperbaiki. Kita diskusikan pendekatan yang paling sesuai sebelum menentukan langkah berikutnya, tanpa komitmen apa pun.'
+    );
+    expect(siteConfig.kontak.location).toContain('Klaten');
+    expect(siteConfig.kontak.whatsappLabel).toBe('Chat WhatsApp');
+    expect(siteConfig.kontak.emailLabel).toBe('Kirim email');
   });
 });
 

@@ -46,7 +46,7 @@ export function Hero() {
               </ConsultationButton>
 
               <Link
-                href="#contoh-solusi"
+                href="#layanan"
                 className="inline-flex items-center justify-center px-6 py-3.5 text-base font-semibold text-brand-primary bg-surface hover:bg-border/60 border border-border rounded-lg focus-visible:outline-brand-accent transition-colors group"
               >
                 <span>{siteConfig.hero.secondaryCta}</span>

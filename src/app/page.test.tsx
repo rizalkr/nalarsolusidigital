@@ -31,18 +31,24 @@ describe('HomePage (Full Narrative Composition)', () => {
     const caraKerjaSection = container.querySelector('section#cara-kerja');
     expect(caraKerjaSection).toBeInTheDocument();
 
-    // Section 5: Closing CTA
-    const ctaHeading = screen.getByRole('heading', {
+    // Section 5: FAQ (#faq)
+    const faqSection = container.querySelector('section#faq');
+    expect(faqSection).toBeInTheDocument();
+
+    // Section 6: Kontak (#kontak)
+    const kontakSection = container.querySelector('section#kontak');
+    expect(kontakSection).toBeInTheDocument();
+    const kontakHeading = screen.getByRole('heading', {
       level: 2,
-      name: siteConfig.closingCta.title,
+      name: siteConfig.kontak.title,
     });
-    expect(ctaHeading).toBeInTheDocument();
+    expect(kontakHeading).toBeInTheDocument();
 
     // Footer
     const footer = container.querySelector('footer');
     expect(footer).toBeInTheDocument();
 
-    // Verify DOM sequence: Header -> Hero -> Services -> Demos -> CaraKerja -> FAQ -> CTA -> Kontak -> Footer
+    // Verify DOM sequence: Header -> Hero -> Services -> Demos -> CaraKerja -> FAQ -> Kontak -> Footer
     const sections = Array.from(container.querySelectorAll('header, section, footer'));
     const tagNames = sections.map((el) => {
       if (el.tagName.toLowerCase() === 'header') return 'header';
@@ -57,7 +63,6 @@ describe('HomePage (Full Narrative Composition)', () => {
       'section#demo',
       'section#cara-kerja',
       'section#faq',
-      'section[cta]',
       'section#kontak',
       'footer',
     ]);
@@ -73,13 +78,12 @@ describe('HomePage (Full Narrative Composition)', () => {
 
     // Section h2 headings across the full page
     const h2Headings = screen.getAllByRole('heading', { level: 2 });
-    expect(h2Headings.length).toBe(6);
+    expect(h2Headings.length).toBe(5);
     expect(h2Headings[0]).toHaveTextContent(siteConfig.layananSection.title);
     expect(h2Headings[1]).toHaveTextContent('Jelajahi Demo Interaktif');
     expect(h2Headings[2]).toHaveTextContent(siteConfig.caraKerja.title);
     expect(h2Headings[3]).toHaveTextContent(siteConfig.faq.title);
-    expect(h2Headings[4]).toHaveTextContent(siteConfig.closingCta.title);
-    expect(h2Headings[5]).toHaveTextContent(siteConfig.contactSection.title);
+    expect(h2Headings[4]).toHaveTextContent(siteConfig.kontak.title);
   });
 
   it('renders the mandatory tagline verbatim in the Hero section and Footer', () => {
@@ -237,7 +241,7 @@ describe('HomePage (Full Narrative Composition)', () => {
       { name: 'Deep Teal Eyebrow on Accent Surface', fg: '#066F6A', bg: '#E7F7F5' },
       { name: 'Deep Teal on White', fg: '#066F6A', bg: '#FFFFFF' },
       { name: 'Navy Button Text on Teal CTA', fg: '#1E2B4B', bg: '#1AA99E' },
-      { name: 'White Text on Navy CTA Banner', fg: '#FFFFFF', bg: '#1E2B4B' },
+      { name: 'White Text on Navy Contact Banner', fg: '#FFFFFF', bg: '#1E2B4B' },
     ];
 
     normalTextPairs.forEach(({ name, fg, bg }) => {
@@ -249,13 +253,13 @@ describe('HomePage (Full Narrative Composition)', () => {
     });
   });
 
-  it('opens the same consultation modal when Hero CTA and Langkah Selanjutnya CTA are clicked', () => {
+  it('opens the consultation modal when Hero CTA is clicked', () => {
     render(<HomePage />);
 
     // Initially modal is not open
     expect(screen.queryByRole('dialog', { name: /Mari Ceritakan Kebutuhan Usaha Anda/i })).not.toBeInTheDocument();
 
-    // 1. Click Hero CTA
+    // Click Hero CTA
     const heroCta = screen.getByRole('button', { name: /^Konsultasi Gratis$/i });
     fireEvent.click(heroCta);
 
@@ -267,14 +271,6 @@ describe('HomePage (Full Narrative Composition)', () => {
     const cancelBtn = screen.getByRole('button', { name: /Batal/i });
     fireEvent.click(cancelBtn);
     expect(screen.queryByRole('dialog', { name: /Mari Ceritakan Kebutuhan Usaha Anda/i })).not.toBeInTheDocument();
-
-    // 2. Click Langkah Selanjutnya CTA (ContactCTA)
-    const closingCta = screen.getByRole('button', { name: new RegExp(siteConfig.closingCta.ctaLabel, 'i') });
-    fireEvent.click(closingCta);
-
-    // Same modal opens
-    const modalFromClosing = screen.getByRole('dialog', { name: /Mari Ceritakan Kebutuhan Usaha Anda/i });
-    expect(modalFromClosing).toBeInTheDocument();
   });
 });
 

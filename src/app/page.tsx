@@ -4,7 +4,6 @@ import { Services } from '@/components/Services';
 import { DemoShowcase } from '@/components/DemoShowcase';
 import { CaraKerja } from '@/components/CaraKerja';
 import { Faq } from '@/components/Faq';
-import { ContactCTA } from '@/components/ContactCTA';
 import { Contact } from '@/components/Contact';
 import { Footer } from '@/components/Footer';
 import { ConsultationModal } from '@/components/ConsultationModal';
@@ -19,7 +18,6 @@ export default function HomePage() {
         <DemoShowcase />
         <CaraKerja />
         <Faq />
-        <ContactCTA />
         <Contact />
       </main>
       <Footer />
