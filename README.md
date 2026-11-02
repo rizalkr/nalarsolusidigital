@@ -93,7 +93,10 @@ All internal programmatic requests must include:
 
 Every mutation writes an audit log entry prefixed with `api: `.
 
-### Endpoints
+For full payload contracts, query parameters, error responses, and TypeScript type definitions, see the dedicated reference:
+👉 **[Full Internal API Documentation](docs/internal-api.md)**
+
+### Endpoints Overview
 
 #### 1. Get Due Follow-ups
 `GET /api/internal/followups-due?date=YYYY-MM-DD`
