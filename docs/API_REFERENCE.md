@@ -32,3 +32,4 @@ This document serves as the primary API Reference for Admin Nalar's internal API
    - Initial allowed statuses: `'riset'`, `'terverifikasi'`, `'siap_kirim'`, `'hold'`, `'tidak_layak'`, `'do_not_contact'`, `'benchmark_only'`.
    - Outreach statuses (`'terkirim'`, `'followup_1'`, `'followup_2'`, `'replied'`, `'pause'`, `'closed'`) cannot be set directly via the `status` field (returns HTTP `400 Bad Request`).
    - Every import row explicitly reports `status_diminta` vs `status_diterapkan` in the response payload.
+

@@ -24,3 +24,4 @@ alter table public.leads
 -- 4. Create index for fast composite lookup
 create index if not exists idx_leads_composite_dedup 
   on public.leads (nomor_telepon_normalized, nama_bisnis_normalized);
+
