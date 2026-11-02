@@ -437,3 +437,4 @@ curl -X POST "https://nalarsolusidigital.my.id/api/internal/import" \
 - `'parsial'`: Partially verified (triggers warning when moved to `siap_kirim`).
 - `'hold'`: Requires manual check.
 - `'tidak_layak'`: Invalid or uncontactable.
+
