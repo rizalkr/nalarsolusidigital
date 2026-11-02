@@ -7,7 +7,8 @@ import {
   VERIFICATION_STATUS_LABELS,
 } from '@/lib/admin/leads/constants';
 import { LeadStatus, VerificationStatus } from '@/lib/admin/leads/types';
-import { Search, ExternalLink, ChevronLeft, ChevronRight, Plus } from 'lucide-react';
+import { Search, ChevronLeft, ChevronRight, Plus } from 'lucide-react';
+import { WaLinkButton } from '@/components/admin/WaLinkButton';
 
 export const dynamic = 'force-dynamic';
 
@@ -193,18 +194,7 @@ export default async function LeadsPage({ searchParams }: LeadsPageProps) {
                         </Link>
                         <div className="text-xs text-text-secondary mt-0.5 flex items-center gap-2">
                           <span>{lead.nomor_telepon}</span>
-                          {lead.link_wa && (
-                            <a
-                              href={lead.link_wa}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="text-emerald-700 hover:underline inline-flex items-center gap-0.5"
-                              onClick={(e) => e.stopPropagation()}
-                            >
-                              <span>WA</span>
-                              <ExternalLink className="w-2.5 h-2.5" />
-                            </a>
-                          )}
+                          {lead.link_wa && <WaLinkButton href={lead.link_wa} />}
                         </div>
                       </td>
 
