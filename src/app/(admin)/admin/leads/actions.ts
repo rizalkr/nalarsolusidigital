@@ -32,13 +32,14 @@ export async function updateLeadStatusAction(
 }
 
 export async function commitImportCsvAction(
-  rows: Array<Record<string, string>>,
+  rows: Array<Record<string, unknown>>,
   defaultBatchRiset?: string | null
 ): Promise<ActionResponse<{
   masuk: number;
   dilewati_duplikat: number;
   gagal: number;
   errors: Array<{ baris: number; pesan: string }>;
+  rows?: unknown[];
 }>> {
   try {
     const summary = await importLeads(rows, {

@@ -14,7 +14,11 @@ import {
   getOperationalWindowStatus,
   isFollowUpDue,
 } from './rules';
-import { processImportRows } from './csv-mapper';
+import {
+  processImportRows,
+  makeCompositeDedupKey,
+  normalizeBusinessName,
+} from './csv-mapper';
 
 /**
  * Resolves database client: user SSR client or service role client.
@@ -464,33 +468,39 @@ export async function getQueueData(
   };
 }
 
+export interface ImportLeadsOptions {
+  defaultBatchRiset?: string | null;
+  actorPrefix?: string;
+  strictValidation?: boolean;
+}
+
 export async function importLeads(
-  rows: Array<Record<string, string>>,
-  options: {
-    defaultBatchRiset?: string | null;
-    actorPrefix?: string;
-  } = {},
+  rows: Array<Record<string, unknown>>,
+  options: ImportLeadsOptions = {},
   useServiceRole: boolean = false
 ) {
   const supabase = await getSupabase(useServiceRole);
 
-  // Fetch all existing normalized phones for dedup
-  const { data: existingPhonesData } = await supabase
+  // Fetch all existing normalized phones AND nama_bisnis for composite dedup
+  const { data: existingLeadsData } = await supabase
     .from('leads')
-    .select('nomor_telepon_normalized');
+    .select('nomor_telepon_normalized, nama_bisnis');
 
-  const existingPhoneSet = new Set<string>();
-  if (existingPhonesData) {
-    existingPhonesData.forEach((row: { nomor_telepon_normalized?: string }) => {
-      if (row.nomor_telepon_normalized) {
-        existingPhoneSet.add(row.nomor_telepon_normalized);
+  const existingLeadKeySet = new Set<string>();
+  if (existingLeadsData) {
+    existingLeadsData.forEach((row: { nomor_telepon_normalized?: string; nama_bisnis?: string }) => {
+      if (row.nomor_telepon_normalized && row.nama_bisnis) {
+        existingLeadKeySet.add(
+          makeCompositeDedupKey(row.nomor_telepon_normalized, row.nama_bisnis)
+        );
       }
     });
   }
 
   const summary = processImportRows(rows, {
     defaultBatchRiset: options.defaultBatchRiset,
-    existingPhoneSet,
+    existingLeadKeySet,
+    strictValidation: options.strictValidation,
   });
 
   if (summary.leads.length === 0) {
@@ -499,6 +509,7 @@ export async function importLeads(
       dilewati_duplikat: summary.dilewati_duplikat,
       gagal: summary.gagal,
       errors: summary.errors,
+      rows: summary.rows,
     };
   }
 
@@ -561,7 +572,9 @@ export async function importLeads(
 
   inserted.forEach((lead) => {
     const originalItem = summary.leads.find(
-      (s) => s.nomor_telepon_normalized === lead.nomor_telepon_normalized
+      (s) =>
+        s.nomor_telepon_normalized === lead.nomor_telepon_normalized &&
+        normalizeBusinessName(s.nama_bisnis) === normalizeBusinessName(lead.nama_bisnis)
     );
 
     if (
@@ -596,5 +609,6 @@ export async function importLeads(
     dilewati_duplikat: summary.dilewati_duplikat,
     gagal: summary.gagal,
     errors: summary.errors,
+    rows: summary.rows,
   };
 }

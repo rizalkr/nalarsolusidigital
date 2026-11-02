@@ -348,7 +348,7 @@ curl -X PATCH "https://nalarsolusidigital.my.id/api/internal/leads/9a3f4e21-508b
 
 ### 2.7. Batch Import Leads
 
-Imports an array of lead objects directly from automated scraping, research batches, or webhook pipelines. Executes global phone number normalization and deduplication automatically.
+Imports an array of lead objects directly from automated scraping, research batches, or webhook pipelines. Executes phone number normalization and composite deduplication (`nomor_telepon_normalized` + `nama_bisnis_normalized`, case-insensitive and trimmed) automatically.
 
 - **Method**: `POST`
 - **Route**: `/api/internal/import`
@@ -358,18 +358,23 @@ Imports an array of lead objects directly from automated scraping, research batc
   - `leads` *(required, array of objects)*: Array of lead rows. Key names can match Google Sheets headers or camelCase/snake_case aliases.
 
 #### Supported Field Names in Lead Objects
-- `Nama Bisnis` / `nama_bisnis` *(required)*
-- `Nomor Telepon` / `nomor_telepon` *(required)*
-- `Tier` / `tier` *(1–4, defaults to 2)*
-- `Sektor` / `sektor`
-- `Kota` / `kota`
-- `Wilayah` / `wilayah`
-- `Status WA` / `Status Riset` / `status`
-- `Sumber Verifikasi` / `verification_source`
-- `Strategi & Sudut Pandang Pitching` / `strategi_pitch`
-- `Verified GBP` / `verified_gbp`
-- `Rating` / `rating`
-- `Jumlah Ulasan` / `jumlah_ulasan`
+- `Nama Bisnis` / `nama_bisnis` *(required, string/number)*
+- `Nomor Telepon` / `nomor_telepon` *(required, string/number)*
+- `Tier` / `tier` *(number or string: 1–4, defaults to 2)*
+- `Sektor` / `sektor` *(string)*
+- `Kota` / `kota` *(string)*
+- `Wilayah` / `wilayah` *(string)*
+- `status` / `Status` / `Status WA` / `Status Riset` *(optional, string)*: Initial allowed statuses are `'riset'`, `'terverifikasi'`, `'siap_kirim'`, `'hold'`, `'tidak_layak'`, `'do_not_contact'`, `'benchmark_only'`. Note: Outreach statuses (`'terkirim'`, `'followup_1'`, `'followup_2'`, `'replied'`, `'pause'`, `'closed'`) cannot be set directly via the `status` field and will return HTTP `400 Bad Request`.
+- `Status Verifikasi` / `verification_status` *(optional, string)*: `'belum'` | `'terverifikasi'` | `'parsial'` | `'hold'` | `'tidak_layak'`. Note: Setting status to `'siap_kirim'` requires verified/partial status.
+- `Sumber Verifikasi` / `verification_source` *(optional, string)*
+- `Strategi & Sudut Pandang Pitching` / `strategi_pitch` *(optional, string)*
+- `Verified GBP` / `verified_gbp` *(optional, boolean or string: `"ya"`/`"tidak"`, `true`/`false`, `1`/`0`)*
+- `Rating` / `rating` *(optional, number)*
+- `Jumlah Ulasan` / `jumlah_ulasan` *(optional, number)*
+
+#### Defensive Type Coercion & Validation Rules
+- Numbers and booleans passed on text fields (e.g. `Tier: 1`, `Verified GBP: true`) are safely coerced.
+- Passing invalid complex types (such as nested objects or arrays on text fields) or passing `null` for required fields returns HTTP `400 Bad Request` specifying the field name and invalid type received.
 
 #### Example Request
 ```bash
@@ -380,20 +385,21 @@ curl -X POST "https://nalarsolusidigital.my.id/api/internal/import" \
     "batch_riset": "2026-11-01-wave2",
     "leads": [
       {
-        "Tier": "1",
+        "Tier": 1,
         "Nama Bisnis": "Batu Alam Nusantara",
         "Sektor": "Batu Alam & Konstruksi",
         "Kota": "Bandung",
         "Wilayah": "Bandung Jabar",
         "Nomor Telepon": "0815-2996-4902",
-        "Status Riset": "TERVERIFIKASI",
+        "status": "terverifikasi",
         "Sumber Verifikasi": "situs resmi live cek",
-        "Strategi & Sudut Pandang Pitching": "Katalog digital ekspor batu alam."
+        "Verified GBP": true
       },
       {
-        "Tier": "2",
-        "Nama Bisnis": "Duplikat Prospek",
-        "Nomor Telepon": "0815-2996-4902"
+        "Tier": 2,
+        "Nama Bisnis": "Batu Alam Nusantara",
+        "Nomor Telepon": "0815-2996-4902",
+        "status": "riset"
       }
     ]
   }'
@@ -407,7 +413,28 @@ curl -X POST "https://nalarsolusidigital.my.id/api/internal/import" \
     "masuk": 1,
     "dilewati_duplikat": 1,
     "gagal": 0,
-    "errors": []
+    "errors": [],
+    "rows": [
+      {
+        "baris": 1,
+        "nama_bisnis": "Batu Alam Nusantara",
+        "nomor_telepon": "0815-2996-4902",
+        "status_diminta": "terverifikasi",
+        "status_diterapkan": "terverifikasi",
+        "status_verifikasi": "terverifikasi",
+        "hasil": "masuk"
+      },
+      {
+        "baris": 2,
+        "nama_bisnis": "Batu Alam Nusantara",
+        "nomor_telepon": "0815-2996-4902",
+        "status_diminta": "riset",
+        "status_diterapkan": "riset",
+        "status_verifikasi": "belum",
+        "hasil": "dilewati_duplikat",
+        "pesan": "Duplikat prospek (kombinasi nomor \"6281529964902\" dan nama \"Batu Alam Nusantara\" sudah terdaftar)."
+      }
+    ]
   }
 }
 ```

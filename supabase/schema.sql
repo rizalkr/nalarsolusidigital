@@ -36,6 +36,7 @@ create table if not exists public.leads (
   kota text not null,
   wilayah text not null default '',
   nama_bisnis text not null,
+  nama_bisnis_normalized text generated always as (lower(trim(nama_bisnis))) stored,
   tipe_usaha text,
   verified_gbp boolean,
   jumlah_ulasan integer,
@@ -58,7 +59,7 @@ create table if not exists public.leads (
   catatan text,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now(),
-  constraint leads_nomor_telepon_normalized_key unique (nomor_telepon_normalized)
+  constraint leads_nomor_telepon_normalized_nama_bisnis_normalized_key unique (nomor_telepon_normalized, nama_bisnis_normalized)
 );
 
 -- 3. Tabel interactions
@@ -87,6 +88,7 @@ create index if not exists idx_leads_status on public.leads(status);
 create index if not exists idx_leads_tier on public.leads(tier);
 create index if not exists idx_leads_wilayah on public.leads(wilayah);
 create index if not exists idx_leads_updated_at on public.leads(updated_at desc);
+create index if not exists idx_leads_composite_dedup on public.leads(nomor_telepon_normalized, nama_bisnis_normalized);
 create index if not exists idx_interactions_lead_terjadi on public.interactions(lead_id, terjadi_pada desc);
 create index if not exists idx_interactions_jenis_terjadi on public.interactions(jenis, terjadi_pada desc);
 create index if not exists idx_audit_logs_lead_created on public.audit_logs(lead_id, created_at desc);
