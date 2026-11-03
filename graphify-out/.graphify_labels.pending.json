@@ -7,10 +7,17 @@
   "5": "compilerOptions",
   "6": "repository.ts",
   "7": "dependencies",
-  "8": "page.tsx",
+  "8": "lucide-react",
   "9": "react",
   "10": "eslint.config.mjs",
   "11": "csv-mapper.ts",
   "12": "postcss.config.mjs",
-  "13": "Draf Copy — Penambahan Informasi Web Nalar Solusi Digital"
+  "13": "Draf Copy — Penambahan Informasi Web Nalar Solusi Digital",
+  "14": "next",
+  "15": "2. API Endpoints",
+  "16": "app/layout.tsx",
+  "17": "scripts",
+  "18": "vite-tsconfig-paths",
+  "19": "tailwindcss",
+  "20": "@testing-library/jest-dom"
 }
