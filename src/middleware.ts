@@ -39,18 +39,17 @@ export async function middleware(request: NextRequest) {
     },
   });
 
-  // getUser() validates the token against Supabase Auth server
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  // getClaims() verifies the JWT locally with cached JWKS instead of hitting the remote Auth server on every click
+  const { data, error } = await supabase.auth.getClaims();
+  const isAuthenticated = !error && Boolean(data?.claims?.sub);
 
-  if (!user && !isLoginPage) {
+  if (!isAuthenticated && !isLoginPage) {
     const redirectUrl = request.nextUrl.clone();
     redirectUrl.pathname = '/admin/login';
     return NextResponse.redirect(redirectUrl);
   }
 
-  if (user && isLoginPage) {
+  if (isAuthenticated && isLoginPage) {
     const redirectUrl = request.nextUrl.clone();
     redirectUrl.pathname = '/admin';
     return NextResponse.redirect(redirectUrl);
@@ -62,4 +61,3 @@ export async function middleware(request: NextRequest) {
 export const config = {
   matcher: ['/admin/:path*'],
 };
-

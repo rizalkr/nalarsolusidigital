@@ -1,5 +1,6 @@
 import 'server-only';
 
+import { unstable_cache, revalidateTag } from 'next/cache';
 import { createClient, createServiceRoleClient } from '@/lib/admin/supabase/server';
 import {
   Lead,
@@ -20,12 +21,43 @@ import {
   normalizeBusinessName,
 } from './csv-mapper';
 
+export const CRM_LEADS_CACHE_TAG = 'crm-leads';
+const CACHE_TTL_SECONDS = 60;
+
+/**
+ * Checks whether service role credentials are available for cookie-free cached queries.
+ */
+function canUseCache(): boolean {
+  return (
+    process.env.NODE_ENV !== 'test' &&
+    Boolean(
+      process.env.NEXT_PUBLIC_SUPABASE_URL &&
+        (process.env.SUPABASE_SECRET_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY)
+    )
+  );
+}
+
+/**
+ * Invalidates the CRM leads server cache on any mutation (UI or Internal API).
+ */
+export function invalidateLeadsCache(): void {
+  try {
+    revalidateTag(CRM_LEADS_CACHE_TAG);
+  } catch {
+    // Ignored when called outside Next.js request context (e.g. unit tests)
+  }
+}
+
 /**
  * Resolves database client: user SSR client or service role client.
  */
 async function getSupabase(useServiceRole: boolean = false) {
-  if (useServiceRole) {
-    return createServiceRoleClient();
+  if (useServiceRole || canUseCache()) {
+    try {
+      return createServiceRoleClient();
+    } catch {
+      return await createClient();
+    }
   }
   try {
     return await createClient();
@@ -54,7 +86,7 @@ export interface ListLeadsResult {
   totalPages: number;
 }
 
-export async function listLeads(
+async function fetchLeadsUncached(
   params: ListLeadsParams = {},
   useServiceRole: boolean = false
 ): Promise<ListLeadsResult> {
@@ -109,7 +141,30 @@ export async function listLeads(
   };
 }
 
-export async function getLeadDetail(
+const getCachedLeadsList = unstable_cache(
+  async (serializedParams: string) => {
+    const parsed = JSON.parse(serializedParams) as ListLeadsParams;
+    return fetchLeadsUncached(parsed, true);
+  },
+  ['crm-leads-list'],
+  { tags: [CRM_LEADS_CACHE_TAG], revalidate: CACHE_TTL_SECONDS }
+);
+
+export async function listLeads(
+  params: ListLeadsParams = {},
+  useServiceRole: boolean = false
+): Promise<ListLeadsResult> {
+  if (canUseCache()) {
+    try {
+      return await getCachedLeadsList(JSON.stringify(params));
+    } catch {
+      return fetchLeadsUncached(params, useServiceRole);
+    }
+  }
+  return fetchLeadsUncached(params, useServiceRole);
+}
+
+async function fetchLeadDetailUncached(
   id: string,
   useServiceRole: boolean = false
 ): Promise<{
@@ -119,33 +174,99 @@ export async function getLeadDetail(
 } | null> {
   const supabase = await getSupabase(useServiceRole);
 
-  const { data: lead, error: leadError } = await supabase
-    .from('leads')
-    .select('*')
-    .eq('id', id)
-    .single();
+  // Execute all 3 queries in parallel (1 network round-trip instead of 3)
+  const [leadRes, interactionsRes, auditLogsRes] = await Promise.all([
+    supabase.from('leads').select('*').eq('id', id).single(),
+    supabase
+      .from('interactions')
+      .select('*')
+      .eq('lead_id', id)
+      .order('terjadi_pada', { ascending: false }),
+    supabase
+      .from('audit_logs')
+      .select('*')
+      .eq('lead_id', id)
+      .order('created_at', { ascending: false }),
+  ]);
 
-  if (leadError || !lead) {
+  if (leadRes.error || !leadRes.data) {
     return null;
   }
 
-  const { data: interactions } = await supabase
-    .from('interactions')
-    .select('*')
-    .eq('lead_id', id)
-    .order('terjadi_pada', { ascending: false });
-
-  const { data: auditLogs } = await supabase
-    .from('audit_logs')
-    .select('*')
-    .eq('lead_id', id)
-    .order('created_at', { ascending: false });
-
   return {
-    lead: lead as Lead,
-    interactions: (interactions as Interaction[]) || [],
-    auditLogs: (auditLogs as AuditLog[]) || [],
+    lead: leadRes.data as Lead,
+    interactions: (interactionsRes.data as Interaction[]) || [],
+    auditLogs: (auditLogsRes.data as AuditLog[]) || [],
   };
+}
+
+const getCachedLeadDetail = unstable_cache(
+  async (id: string) => fetchLeadDetailUncached(id, true),
+  ['crm-lead-detail'],
+  { tags: [CRM_LEADS_CACHE_TAG], revalidate: CACHE_TTL_SECONDS }
+);
+
+export async function getLeadDetail(
+  id: string,
+  useServiceRole: boolean = false
+): Promise<{
+  lead: Lead;
+  interactions: Interaction[];
+  auditLogs: AuditLog[];
+} | null> {
+  if (canUseCache()) {
+    try {
+      return await getCachedLeadDetail(id);
+    } catch {
+      return fetchLeadDetailUncached(id, useServiceRole);
+    }
+  }
+  return fetchLeadDetailUncached(id, useServiceRole);
+}
+
+/**
+ * Lightweight query for today's used outreach slots in WIB.
+ */
+async function fetchTodaySlotsUsedUncached(
+  wibTodayString: string,
+  useServiceRole: boolean = false
+): Promise<number> {
+  const supabase = await getSupabase(useServiceRole);
+  const startOfWibDay = new Date(`${wibTodayString}T00:00:00+07:00`).toISOString();
+  const endOfWibDay = new Date(`${wibTodayString}T23:59:59+07:00`).toISOString();
+
+  const { count } = await supabase
+    .from('interactions')
+    .select('id', { count: 'exact', head: true })
+    .eq('jenis', 'penawaran')
+    .gte('terjadi_pada', startOfWibDay)
+    .lte('terjadi_pada', endOfWibDay);
+
+  return count || 0;
+}
+
+const getCachedTodaySlotsUsed = unstable_cache(
+  async (wibTodayString: string) => fetchTodaySlotsUsedUncached(wibTodayString, true),
+  ['crm-today-slots-used'],
+  { tags: [CRM_LEADS_CACHE_TAG], revalidate: CACHE_TTL_SECONDS }
+);
+
+export async function getTodaySlotsUsed(
+  referenceDate: Date = new Date(),
+  useServiceRole: boolean = false
+): Promise<number> {
+  const wibTodayString = new Intl.DateTimeFormat('en-CA', {
+    timeZone: 'Asia/Jakarta',
+  }).format(referenceDate);
+
+  if (canUseCache()) {
+    try {
+      return await getCachedTodaySlotsUsed(wibTodayString);
+    } catch {
+      return fetchTodaySlotsUsedUncached(wibTodayString, useServiceRole);
+    }
+  }
+  return fetchTodaySlotsUsedUncached(wibTodayString, useServiceRole);
 }
 
 export interface TransitionLeadOptions {
@@ -222,31 +343,7 @@ export async function transitionLeadWithAudit(
     throw new Error(`Gagal memperbarui prospek: ${updateErr?.message}`);
   }
 
-  // Insert interaction if specified
-  let savedInteraction: Interaction | undefined;
-  if (options.interaction) {
-    const occurredAt = options.interaction.terjadi_pada
-      ? new Date(options.interaction.terjadi_pada).toISOString()
-      : new Date().toISOString();
-
-    const { data: intData, error: intErr } = await supabase
-      .from('interactions')
-      .insert({
-        lead_id: options.leadId,
-        jenis: options.interaction.jenis,
-        isi: options.interaction.isi || null,
-        terjadi_pada: occurredAt,
-        channel: options.interaction.channel || 'wa_business',
-      })
-      .select()
-      .single();
-
-    if (!intErr && intData) {
-      savedInteraction = intData as Interaction;
-    }
-  }
-
-  // Write audit log
+  // Prepare audit log payload
   const prefix = options.actorPrefix || '';
   const auditAksi = `${prefix}status: ${current.status} → ${options.toStatus}`;
   const detailParts: string[] = [];
@@ -260,11 +357,38 @@ export async function transitionLeadWithAudit(
     detailParts.push(`Catatan: ${options.catatan}`);
   }
 
-  await supabase.from('audit_logs').insert({
-    lead_id: options.leadId,
-    aksi: auditAksi,
-    detail: detailParts.length > 0 ? detailParts.join(' | ') : null,
-  });
+  // Insert interaction (if specified) and audit log in parallel
+  const occurredAt = options.interaction?.terjadi_pada
+    ? new Date(options.interaction.terjadi_pada).toISOString()
+    : new Date().toISOString();
+
+  const [interactionResult] = await Promise.all([
+    options.interaction
+      ? supabase
+          .from('interactions')
+          .insert({
+            lead_id: options.leadId,
+            jenis: options.interaction.jenis,
+            isi: options.interaction.isi || null,
+            terjadi_pada: occurredAt,
+            channel: options.interaction.channel || 'wa_business',
+          })
+          .select()
+          .single()
+      : Promise.resolve({ data: undefined, error: null }),
+    supabase.from('audit_logs').insert({
+      lead_id: options.leadId,
+      aksi: auditAksi,
+      detail: detailParts.length > 0 ? detailParts.join(' | ') : null,
+    }),
+  ]);
+
+  const savedInteraction =
+    interactionResult && !interactionResult.error && interactionResult.data
+      ? (interactionResult.data as Interaction)
+      : undefined;
+
+  invalidateLeadsCache();
 
   return {
     lead: updatedLead as Lead,
@@ -272,22 +396,77 @@ export async function transitionLeadWithAudit(
   };
 }
 
+async function fetchDashboardRawDataUncached(
+  wibTodayString: string,
+  useServiceRole: boolean = false
+): Promise<{
+  allLeads: Lead[];
+  slotsUsed: number;
+  allInteractions: Interaction[];
+}> {
+  const supabase = await getSupabase(useServiceRole);
+  const startOfWibDay = new Date(`${wibTodayString}T00:00:00+07:00`).toISOString();
+  const endOfWibDay = new Date(`${wibTodayString}T23:59:59+07:00`).toISOString();
+
+  // Execute all 3 queries in parallel (1 round-trip instead of 3)
+  const [leadsRes, sentTodayRes, interactionsRes] = await Promise.all([
+    supabase
+      .from('leads')
+      .select('id, tier, status, verification_status, nama_bisnis, kota, sektor, updated_at'),
+    supabase
+      .from('interactions')
+      .select('id', { count: 'exact', head: true })
+      .eq('jenis', 'penawaran')
+      .gte('terjadi_pada', startOfWibDay)
+      .lte('terjadi_pada', endOfWibDay),
+    supabase
+      .from('interactions')
+      .select('*')
+      .order('terjadi_pada', { ascending: false }),
+  ]);
+
+  if (leadsRes.error) {
+    throw new Error(`Failed to load dashboard summary: ${leadsRes.error.message}`);
+  }
+
+  return {
+    allLeads: (leadsRes.data as Lead[]) || [],
+    slotsUsed: sentTodayRes.count || 0,
+    allInteractions: (interactionsRes.data as Interaction[]) || [],
+  };
+}
+
+const getCachedDashboardRawData = unstable_cache(
+  async (wibTodayString: string) => fetchDashboardRawDataUncached(wibTodayString, true),
+  ['crm-dashboard-raw'],
+  { tags: [CRM_LEADS_CACHE_TAG], revalidate: CACHE_TTL_SECONDS }
+);
+
 export async function getDashboardSummary(
   referenceDate: Date = new Date(),
   useServiceRole: boolean = false
 ) {
-  const supabase = await getSupabase(useServiceRole);
+  const wibTodayString = new Intl.DateTimeFormat('en-CA', {
+    timeZone: 'Asia/Jakarta',
+  }).format(referenceDate);
 
-  // 1. Fetch all leads to compute status and tier breakdowns
-  const { data: allLeadsData, error } = await supabase
-    .from('leads')
-    .select('id, tier, status, verification_status, nama_bisnis, kota, sektor, updated_at');
+  let rawData: {
+    allLeads: Lead[];
+    slotsUsed: number;
+    allInteractions: Interaction[];
+  };
 
-  if (error) {
-    throw new Error(`Failed to load dashboard summary: ${error.message}`);
+  if (canUseCache()) {
+    try {
+      rawData = await getCachedDashboardRawData(wibTodayString);
+    } catch {
+      rawData = await fetchDashboardRawDataUncached(wibTodayString, useServiceRole);
+    }
+  } else {
+    rawData = await fetchDashboardRawDataUncached(wibTodayString, useServiceRole);
   }
 
-  const allLeads = (allLeadsData as Lead[]) || [];
+  const { allLeads, slotsUsed, allInteractions } = rawData;
 
   const statusCounts: Record<string, number> = {
     siap_kirim: 0,
@@ -311,26 +490,8 @@ export async function getDashboardSummary(
     tierCounts[l.tier] = (tierCounts[l.tier] || 0) + 1;
   });
 
-  // 2. Compute slots sent today (interactions of type 'penawaran' today in WIB)
-  // Asia/Jakarta is UTC+7
-  const wibTodayString = new Intl.DateTimeFormat('en-CA', {
-    timeZone: 'Asia/Jakarta',
-  }).format(referenceDate); // YYYY-MM-DD in WIB
-
-  const startOfWibDay = new Date(`${wibTodayString}T00:00:00+07:00`).toISOString();
-  const endOfWibDay = new Date(`${wibTodayString}T23:59:59+07:00`).toISOString();
-
-  const { count: sentTodayCount } = await supabase
-    .from('interactions')
-    .select('id', { count: 'exact', head: true })
-    .eq('jenis', 'penawaran')
-    .gte('terjadi_pada', startOfWibDay)
-    .lte('terjadi_pada', endOfWibDay);
-
-  const slotsUsed = sentTodayCount || 0;
   const operationalStatus = getOperationalWindowStatus(referenceDate, slotsUsed);
 
-  // 3. Compute follow-ups due today
   // Filter active outreach leads: terkirim & followup_1
   const candidateLeads = allLeads.filter((l) =>
     ['terkirim', 'followup_1'].includes(l.status)
@@ -343,15 +504,8 @@ export async function getDashboardSummary(
   }> = [];
 
   if (candidateLeads.length > 0) {
-    const candidateIds = candidateLeads.map((l) => l.id);
-    const { data: candidateInteractions } = await supabase
-      .from('interactions')
-      .select('*')
-      .in('lead_id', candidateIds)
-      .order('terjadi_pada', { ascending: false });
-
     const interactionMap = new Map<string, Interaction[]>();
-    (candidateInteractions as Interaction[] || []).forEach((item) => {
+    allInteractions.forEach((item) => {
       const arr = interactionMap.get(item.lead_id) || [];
       arr.push(item);
       interactionMap.set(item.lead_id, arr);
@@ -369,11 +523,10 @@ export async function getDashboardSummary(
       }
     });
 
-    // Sort by days overdue descending
     dueLeads.sort((a, b) => b.daysOverdue - a.daysOverdue);
   }
 
-  // 4. "Baru siap kirim": 5 newest siap_kirim leads
+  // "Baru siap kirim": 5 newest siap_kirim leads
   const newestSiapKirim = allLeads
     .filter((l) => l.status === 'siap_kirim')
     .sort(
@@ -392,20 +545,59 @@ export async function getDashboardSummary(
   };
 }
 
+async function fetchQueueRawDataUncached(
+  useServiceRole: boolean = false
+): Promise<{
+  allQueueLeads: Lead[];
+  allInteractions: Interaction[];
+}> {
+  const supabase = await getSupabase(useServiceRole);
+
+  // Fetch queue leads and interactions in parallel (1 round-trip instead of 2)
+  const [leadsRes, interactionsRes] = await Promise.all([
+    supabase
+      .from('leads')
+      .select('*')
+      .in('status', ['siap_kirim', 'terkirim', 'followup_1', 'hold'])
+      .order('updated_at', { ascending: true }),
+    supabase
+      .from('interactions')
+      .select('*')
+      .order('terjadi_pada', { ascending: false }),
+  ]);
+
+  return {
+    allQueueLeads: (leadsRes.data as Lead[]) || [],
+    allInteractions: (interactionsRes.data as Interaction[]) || [],
+  };
+}
+
+const getCachedQueueRawData = unstable_cache(
+  async () => fetchQueueRawDataUncached(true),
+  ['crm-queue-raw'],
+  { tags: [CRM_LEADS_CACHE_TAG], revalidate: CACHE_TTL_SECONDS }
+);
+
 export async function getQueueData(
   referenceDate: Date = new Date(),
   useServiceRole: boolean = false
 ) {
-  const supabase = await getSupabase(useServiceRole);
+  let rawData: {
+    allQueueLeads: Lead[];
+    allInteractions: Interaction[];
+  };
 
-  // Fetch relevant queue leads: siap_kirim, terkirim, followup_1, hold
-  const { data: leadsData } = await supabase
-    .from('leads')
-    .select('*')
-    .in('status', ['siap_kirim', 'terkirim', 'followup_1', 'hold'])
-    .order('updated_at', { ascending: true });
+  if (canUseCache()) {
+    try {
+      rawData = await getCachedQueueRawData();
+    } catch {
+      rawData = await fetchQueueRawDataUncached(useServiceRole);
+    }
+  } else {
+    rawData = await fetchQueueRawDataUncached(useServiceRole);
+  }
 
-  const allQueueLeads = (leadsData as Lead[]) || [];
+  const { allQueueLeads, allInteractions } = rawData;
 
   // Block A: SIAP KIRIM (sorted by tier ASC, updated_at ASC)
   const siapKirim = allQueueLeads
@@ -427,15 +619,8 @@ export async function getQueueData(
   }> = [];
 
   if (candidateLeads.length > 0) {
-    const candidateIds = candidateLeads.map((l) => l.id);
-    const { data: candidateInteractions } = await supabase
-      .from('interactions')
-      .select('*')
-      .in('lead_id', candidateIds)
-      .order('terjadi_pada', { ascending: false });
-
     const interactionMap = new Map<string, Interaction[]>();
-    (candidateInteractions as Interaction[] || []).forEach((item) => {
+    allInteractions.forEach((item) => {
       const arr = interactionMap.get(item.lead_id) || [];
       arr.push(item);
       interactionMap.set(item.lead_id, arr);
@@ -596,13 +781,16 @@ export async function importLeads(
     });
   });
 
-  if (initialInteractions.length > 0) {
-    await supabase.from('interactions').insert(initialInteractions);
-  }
+  await Promise.all([
+    initialInteractions.length > 0
+      ? supabase.from('interactions').insert(initialInteractions)
+      : Promise.resolve(),
+    auditLogsPayload.length > 0
+      ? supabase.from('audit_logs').insert(auditLogsPayload)
+      : Promise.resolve(),
+  ]);
 
-  if (auditLogsPayload.length > 0) {
-    await supabase.from('audit_logs').insert(auditLogsPayload);
-  }
+  invalidateLeadsCache();
 
   return {
     masuk: inserted.length,
