@@ -163,5 +163,65 @@ describe('LayananModal Component', () => {
     unmount();
     expect(document.body.style.overflow).not.toBe('hidden');
   });
+
+  it('renders YouTube video iframe with autoplay and floating close button when youtubeUrl is set', () => {
+    const handleClose = vi.fn();
+    const handleToggle = vi.fn();
+    const itemWithVideo = {
+      ...sampleLayanan,
+      youtubeUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+    };
+
+    render(
+      <LayananModal
+        item={itemWithVideo}
+        isSelected={false}
+        onToggleSelect={handleToggle}
+        onClose={handleClose}
+        labels={defaultLabels}
+      />
+    );
+
+    const videoContainer = screen.getByTestId('layanan-modal-video');
+    expect(videoContainer).toBeInTheDocument();
+
+    const iframe = screen.getByTitle(`${itemWithVideo.title} video`);
+    expect(iframe).toBeInTheDocument();
+    expect(iframe).toHaveAttribute(
+      'src',
+      'https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ?rel=0&autoplay=1'
+    );
+    expect(iframe).toHaveAttribute('allow');
+    expect(iframe.getAttribute('allow')).toContain('autoplay');
+
+    // Close button on video should trigger handleClose
+    const closeButtons = screen.getAllByRole('button', { name: defaultLabels.close });
+    fireEvent.click(closeButtons[0]);
+    expect(handleClose).toHaveBeenCalledTimes(1);
+  });
+
+  it('falls back to icon header when youtubeUrl is absent or invalid', () => {
+    const handleClose = vi.fn();
+    const handleToggle = vi.fn();
+    const itemWithoutVideo = {
+      ...sampleLayanan,
+      youtubeUrl: undefined,
+    };
+
+    render(
+      <LayananModal
+        item={itemWithoutVideo}
+        isSelected={false}
+        onToggleSelect={handleToggle}
+        onClose={handleClose}
+        labels={defaultLabels}
+      />
+    );
+
+    expect(screen.queryByTestId('layanan-modal-video')).not.toBeInTheDocument();
+    const closeButton = screen.getAllByRole('button', { name: defaultLabels.close })[0];
+    fireEvent.click(closeButton);
+    expect(handleClose).toHaveBeenCalledTimes(1);
+  });
 });
 

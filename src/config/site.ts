@@ -10,6 +10,7 @@ export interface LayananItem {
   deliverables: string[];
   note?: string;
   icon: string; // nama ikon lucide, dipetakan di komponen
+  youtubeUrl?: string;
 }
 
 export interface PaketItem {
@@ -17,6 +18,7 @@ export interface PaketItem {
   title: string;
   audience: string;
   includes: string[];
+  youtubeUrl?: string;
 }
 
 export interface DemoItem {
@@ -264,7 +266,7 @@ export const siteConfig: SiteConfig = {
     {
       id: 'gbp',
       title: 'Google Business Profile',
-      description: 'Usaha Anda muncul di Google Search & Maps dengan tampilan profesional.',
+      description: 'Usaha Anda tampil profesional di Google Maps, mudah ditemukan pelanggan sekitar.',
       deliverables: [
         'Profil bisnis terverifikasi (nama, alamat, jam, foto)',
         'Kategori & deskripsi yang tepat sasaran',
@@ -295,6 +297,7 @@ export const siteConfig: SiteConfig = {
         'Panduan update produk sendiri',
       ],
       icon: 'ShoppingBag',
+      youtubeUrl: '2Fm29l5zDcI',
     },
     {
       id: 'website-company-profile',
@@ -348,6 +351,7 @@ export const siteConfig: SiteConfig = {
       ],
       note: 'Butuh diskusi mendalam dulu — kami kerjakan hanya jika ini memang solusi paling masuk akal.',
       icon: 'ClipboardList',
+      youtubeUrl: 'myzmdNQ1Ssg'
     },
   ],
   paketSectionTitle: 'Atau pilih paket siap pakai',
@@ -522,5 +526,7 @@ export const siteConfig: SiteConfig = {
       'Membantu usaha lokal menemukan dan mengembangkan solusi digital yang sesuai dengan kebutuhan bisnis.',
     copyrightTemplate: '© {year} Nalar Solusi Digital. Hak cipta dilindungi.',
   },
-  social: {},
+  social: {
+    instagram: 'https://www.instagram.com/nalarsolusidigital/',
+  },
 };

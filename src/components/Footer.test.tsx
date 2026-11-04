@@ -82,26 +82,38 @@ describe('Footer Component', () => {
     siteConfig.contact.email = originalEmail;
   });
 
-  it('displays fallback message when neither WhatsApp nor email is configured', () => {
+  it('renders configured Instagram channel with target="_blank" and rel="noopener noreferrer"', () => {
+    render(<Footer />);
+    const igLink = screen.getByRole('link', { name: /Instagram/i });
+    expect(igLink).toBeInTheDocument();
+    expect(igLink).toHaveAttribute('href', 'https://www.instagram.com/nalarsolusidigital/');
+    expect(igLink).toHaveAttribute('target', '_blank');
+    expect(igLink).toHaveAttribute('rel', 'noopener noreferrer');
+  });
+
+  it('displays fallback message when no contact channel is configured', () => {
     const waSpy = vi.spyOn(whatsappModule, 'buildWhatsAppUrl').mockReturnValue(null);
     const originalEmail = siteConfig.contact.email;
+    const originalInstagram = siteConfig.social.instagram;
     siteConfig.contact.email = null;
+    siteConfig.social.instagram = undefined;
 
     render(<Footer />);
     expect(screen.getByText(/Saluran kontak sedang dipersiapkan/i)).toBeInTheDocument();
 
     siteConfig.contact.email = originalEmail;
+    siteConfig.social.instagram = originalInstagram;
     waSpy.mockRestore();
   });
 
-  it('does not invent fake office addresses or social media accounts', () => {
+  it('does not invent fake office addresses or unconfigured social media accounts', () => {
     const { container } = render(<Footer />);
     const text = container.textContent || '';
 
     // No invented physical address
     expect(text).not.toMatch(/jalan |jl\.|gedung |ruko /i);
-    // No invented social handles
-    expect(text).not.toMatch(/instagram|facebook|twitter|linkedin|tiktok/i);
+    // No unconfigured social handles
+    expect(text).not.toMatch(/facebook|twitter|linkedin|tiktok/i);
   });
 
   it('renders dynamic copyright year formatted through siteConfig copyright template', () => {

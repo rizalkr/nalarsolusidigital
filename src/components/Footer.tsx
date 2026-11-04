@@ -93,7 +93,21 @@ export function Footer() {
                 </li>
               ) : null}
 
-              {!whatsappUrl && !siteConfig.contact.email ? (
+              {siteConfig.social.instagram ? (
+                <li>
+                  <a
+                    href={siteConfig.social.instagram}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-sm text-text-secondary hover:text-brand-accent-strong focus-visible:outline-brand-accent transition-colors inline-flex items-center gap-2"
+                  >
+
+                    <span>Instagram</span>
+                  </a>
+                </li>
+              ) : null}
+
+              {!whatsappUrl && !siteConfig.contact.email && !siteConfig.social.instagram ? (
                 <li>
                   <span className="text-sm text-text-secondary italic">
                     Saluran kontak sedang dipersiapkan
