@@ -436,6 +436,40 @@ export const siteConfig: SiteConfig = {
       url: process.env.NEXT_PUBLIC_DEMO_RENTAL_URL?.trim() || null,
       previewImage: '/images/demos/rental-preview.png',
     },
+    {
+      id: 'katalog-digital',
+      name: 'Katalog Digital',
+      title: 'Katalog Digital + Pemesanan via WhatsApp',
+      badge: 'DEMO INTERAKTIF',
+      tagline: 'Katalog Produk, Informasi Usaha, dan Pemesanan',
+      description:
+        'Contoh katalog digital untuk menampilkan produk, informasi usaha, dan tombol pemesanan via WhatsApp.',
+      features: [
+        'Katalog produk',
+        'Informasi usaha',
+        'Tombol pemesanan via WhatsApp',
+      ],
+      ctaLabel: 'Buka Demo Interaktif',
+      url: process.env.NEXT_PUBLIC_DEMO_KATALOG_URL?.trim() || 'https://katalog-digital-demo.vercel.app/',
+      previewImage: '/images/demos/katalog-preview.png',
+    },
+    {
+      id: 'sistem-administrasi',
+      name: 'Sistem Administrasi',
+      title: 'Sistem Administrasi Digital',
+      badge: 'DEMO INTERAKTIF',
+      tagline: 'Pencatatan & Alur Kerja Sesuai Kebutuhan Usaha',
+      description:
+        'Contoh sistem administrasi digital yang disesuaikan dengan alur kerja usaha, mulai dari pencatatan hingga laporan.',
+      features: [
+        'Pencatatan transaksi',
+        'Alur kerja sesuai kebutuhan',
+        'Laporan dan analisis data',
+      ],
+      ctaLabel: 'Buka Demo Interaktif',
+      url: process.env.NEXT_PUBLIC_DEMO_ADMIN_URL?.trim() || 'https://sistem-admin-demo-dun.vercel.app/',
+      previewImage: '/images/demos/sistem-admin-preview.png',
+    }
   ],
   caraKerja: {
     badge: 'CARA KERJA',
