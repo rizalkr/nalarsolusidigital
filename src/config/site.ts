@@ -274,6 +274,7 @@ export const siteConfig: SiteConfig = {
       ],
       note: 'Audit gratis: cek kondisi profil Anda saat ini, tanpa komitmen.',
       icon: 'MapPin',
+      youtubeUrl: 'vLiE47OKnZY ',
     },
     {
       id: 'email-bisnis',
@@ -285,6 +286,7 @@ export const siteConfig: SiteConfig = {
         'Alamat per fungsi (keuangan@, cs@, tender@)',
       ],
       icon: 'Mail',
+      youtubeUrl: 'https://youtu.be/-Tzbblsm038',
     },
     {
       id: 'katalog-whatsapp',
@@ -309,6 +311,7 @@ export const siteConfig: SiteConfig = {
         'Terhubung ke WhatsApp & Google Maps',
       ],
       icon: 'Globe',
+      youtubeUrl: 'AB2qcn_pV3w',
     },
     {
       id: 'company-profile-pdf',
@@ -319,6 +322,7 @@ export const siteConfig: SiteConfig = {
         'Struktur lengkap: profil, layanan, pengalaman, kontak',
       ],
       icon: 'FileText',
+      youtubeUrl: 'tB1vqTNtiOI',
     },
     {
       id: 'wa-business-setup',
@@ -330,6 +334,7 @@ export const siteConfig: SiteConfig = {
         'Label chat pelanggan',
       ],
       icon: 'MessageCircle',
+      youtubeUrl: 'https://youtu.be/r2r_zzHFijw',
     },
     {
       id: 'landing-page',
@@ -340,6 +345,7 @@ export const siteConfig: SiteConfig = {
         'Terhubung ke WA / formulir',
       ],
       icon: 'MousePointerClick',
+      youtubeUrl: 'https://youtu.be/jnlX9g1mYOc',
     },
     {
       id: 'sistem-administrasi',
@@ -360,6 +366,7 @@ export const siteConfig: SiteConfig = {
       id: 'paket-tender',
       title: 'Paket Siap Tender',
       audience: 'Kontraktor & konsultan',
+      youtubeUrl: 'https://youtu.be/e-m_vhgtUeI',
       includes: [
         'Email bisnis',
         'Google Business Profile',
@@ -371,6 +378,7 @@ export const siteConfig: SiteConfig = {
       id: 'paket-kuliner',
       title: 'Paket Kuliner Online',
       audience: 'Makanan & minuman',
+      youtubeUrl: 'https://youtu.be/8QvjSUg82Ng',
       includes: [
         'Katalog digital',
         'Pemesanan via WhatsApp',
@@ -381,6 +389,7 @@ export const siteConfig: SiteConfig = {
       id: 'paket-korporat',
       title: 'Paket Kepercayaan Korporat',
       audience: 'Konveksi, manufaktur & jasa B2B',
+      youtubeUrl: 'https://youtu.be/vbbjWoeaDZw',
       includes: ['Katalog digital', 'Website company profile'],
     },
   ],
