@@ -76,7 +76,7 @@ describe('DemoShowcase Component (Demo Section with Carousel & Detail Modal)', (
   it('renders "Lihat Detail" button for each demo card', () => {
     render(<DemoShowcase />);
     const detailButtons = screen.getAllByRole('button', { name: /Lihat detail demo/i });
-    expect(detailButtons).toHaveLength(2);
+    expect(detailButtons).toHaveLength(siteConfig.demos.length);
   });
 
   it('opens detail modal for Ruang Konveksi with correct screenshot, description, and features', async () => {

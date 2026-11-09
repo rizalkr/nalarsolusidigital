@@ -9,7 +9,12 @@ import {
   LeadStatus,
   VerificationStatus,
   InteractionType,
+  OperationalSettings,
 } from './types';
+import {
+  DEFAULT_MAX_DAILY_SENDS,
+  DEFAULT_WA_ACCOUNTS,
+} from './constants';
 import {
   canTransition,
   getOperationalWindowStatus,
@@ -396,6 +401,102 @@ export async function transitionLeadWithAudit(
   };
 }
 
+/**
+ * Reads operational settings (maxDailySlots, waAccounts) from Supabase settings table.
+ * Falls back to default constants if settings table does not have values.
+ */
+export async function getOperationalSettings(
+  useServiceRole: boolean = false
+): Promise<OperationalSettings> {
+  try {
+    const supabase = await getSupabase(useServiceRole);
+    const { data, error } = await supabase.from('settings').select('key, value');
+
+    if (error || !Array.isArray(data)) {
+      return {
+        maxDailySlots: DEFAULT_MAX_DAILY_SENDS,
+        waAccounts: DEFAULT_WA_ACCOUNTS,
+      };
+    }
+
+    const settingsMap: Record<string, unknown> = {};
+    data.forEach((row: { key: string; value: unknown }) => {
+      settingsMap[row.key] = row.value;
+    });
+
+    return {
+      maxDailySlots:
+        typeof settingsMap.maxDailySlots === 'number'
+          ? settingsMap.maxDailySlots
+          : DEFAULT_MAX_DAILY_SENDS,
+      waAccounts:
+        typeof settingsMap.waAccounts === 'number'
+          ? settingsMap.waAccounts
+          : DEFAULT_WA_ACCOUNTS,
+    };
+  } catch {
+    return {
+      maxDailySlots: DEFAULT_MAX_DAILY_SENDS,
+      waAccounts: DEFAULT_WA_ACCOUNTS,
+    };
+  }
+}
+
+/**
+ * Upserts operational settings and writes an audit log entry.
+ */
+export async function updateOperationalSettings(
+  updates: Partial<OperationalSettings>,
+  performedByApi: boolean = false
+): Promise<OperationalSettings> {
+  const supabase = createServiceRoleClient();
+  const now = new Date().toISOString();
+
+  const entriesToUpsert: Array<{ key: string; value: unknown; updated_at: string }> = [];
+  const detailParts: string[] = [];
+
+  if (typeof updates.maxDailySlots === 'number') {
+    entriesToUpsert.push({
+      key: 'maxDailySlots',
+      value: updates.maxDailySlots,
+      updated_at: now,
+    });
+    detailParts.push(`maxDailySlots: ${updates.maxDailySlots}`);
+  }
+
+  if (typeof updates.waAccounts === 'number') {
+    entriesToUpsert.push({
+      key: 'waAccounts',
+      value: updates.waAccounts,
+      updated_at: now,
+    });
+    detailParts.push(`waAccounts: ${updates.waAccounts}`);
+  }
+
+  if (entriesToUpsert.length > 0) {
+    const { error: upsertError } = await supabase
+      .from('settings')
+      .upsert(entriesToUpsert, { onConflict: 'key' });
+
+    if (upsertError) {
+      throw new Error(`Failed to update settings: ${upsertError.message}`);
+    }
+
+    // Insert audit log
+    const auditAksi = performedByApi ? 'api: update_settings' : 'update_settings';
+    await supabase.from('audit_logs').insert({
+      lead_id: null,
+      aksi: auditAksi,
+      detail: detailParts.join(' | ') || null,
+      created_at: now,
+    });
+
+    invalidateLeadsCache();
+  }
+
+  return getOperationalSettings(true);
+}
+
 async function fetchDashboardRawDataUncached(
   wibTodayString: string,
   useServiceRole: boolean = false
@@ -403,13 +504,14 @@ async function fetchDashboardRawDataUncached(
   allLeads: Lead[];
   slotsUsed: number;
   allInteractions: Interaction[];
+  operationalSettings: OperationalSettings;
 }> {
   const supabase = await getSupabase(useServiceRole);
   const startOfWibDay = new Date(`${wibTodayString}T00:00:00+07:00`).toISOString();
   const endOfWibDay = new Date(`${wibTodayString}T23:59:59+07:00`).toISOString();
 
-  // Execute all 3 queries in parallel (1 round-trip instead of 3)
-  const [leadsRes, sentTodayRes, interactionsRes] = await Promise.all([
+  // Execute all 4 queries in parallel (1 round-trip instead of 4)
+  const [leadsRes, sentTodayRes, interactionsRes, settingsRes] = await Promise.all([
     supabase
       .from('leads')
       .select('id, tier, status, verification_status, nama_bisnis, kota, sektor, updated_at'),
@@ -423,16 +525,38 @@ async function fetchDashboardRawDataUncached(
       .from('interactions')
       .select('*')
       .order('terjadi_pada', { ascending: false }),
+    supabase
+      .from('settings')
+      .select('key, value'),
   ]);
 
   if (leadsRes.error) {
     throw new Error(`Failed to load dashboard summary: ${leadsRes.error.message}`);
   }
 
+  const settingsMap: Record<string, unknown> = {};
+  if (settingsRes && !settingsRes.error && Array.isArray(settingsRes.data)) {
+    settingsRes.data.forEach((row: { key: string; value: unknown }) => {
+      settingsMap[row.key] = row.value;
+    });
+  }
+
+  const operationalSettings: OperationalSettings = {
+    maxDailySlots:
+      typeof settingsMap.maxDailySlots === 'number'
+        ? settingsMap.maxDailySlots
+        : DEFAULT_MAX_DAILY_SENDS,
+    waAccounts:
+      typeof settingsMap.waAccounts === 'number'
+        ? settingsMap.waAccounts
+        : DEFAULT_WA_ACCOUNTS,
+  };
+
   return {
     allLeads: (leadsRes.data as Lead[]) || [],
     slotsUsed: sentTodayRes.count || 0,
     allInteractions: (interactionsRes.data as Interaction[]) || [],
+    operationalSettings,
   };
 }
 
@@ -454,6 +578,7 @@ export async function getDashboardSummary(
     allLeads: Lead[];
     slotsUsed: number;
     allInteractions: Interaction[];
+    operationalSettings: OperationalSettings;
   };
 
   if (canUseCache()) {
@@ -466,7 +591,7 @@ export async function getDashboardSummary(
     rawData = await fetchDashboardRawDataUncached(wibTodayString, useServiceRole);
   }
 
-  const { allLeads, slotsUsed, allInteractions } = rawData;
+  const { allLeads, slotsUsed, allInteractions, operationalSettings } = rawData;
 
   const statusCounts: Record<string, number> = {
     siap_kirim: 0,
@@ -490,7 +615,12 @@ export async function getDashboardSummary(
     tierCounts[l.tier] = (tierCounts[l.tier] || 0) + 1;
   });
 
-  const operationalStatus = getOperationalWindowStatus(referenceDate, slotsUsed);
+  const operationalStatus = getOperationalWindowStatus(
+    referenceDate,
+    slotsUsed,
+    operationalSettings.maxDailySlots,
+    operationalSettings.waAccounts
+  );
 
   // Filter active outreach leads: terkirim & followup_1
   const candidateLeads = allLeads.filter((l) =>

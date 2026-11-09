@@ -1,7 +1,14 @@
 import { LeadStatus, VerificationStatus, InteractionType } from './types';
 
 export const FOLLOW_UP_DAYS = 7;
-export const MAX_DAILY_SENDS = 5;
+export const DEFAULT_MAX_DAILY_SENDS = 5;
+export const MAX_DAILY_SENDS = DEFAULT_MAX_DAILY_SENDS;
+export const DEFAULT_WA_ACCOUNTS = 2;
+
+export const SETTINGS_LIMITS = {
+  maxDailySlots: { min: 1, max: 50 },
+  waAccounts: { min: 1, max: 10 },
+} as const;
 
 export const OPERATIONAL_HOURS = {
   startHour: 9,

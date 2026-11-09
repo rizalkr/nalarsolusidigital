@@ -212,6 +212,17 @@ describe('Admin Nalar Leads Business Rules', () => {
       const status = getOperationalWindowStatus(wednesdayMorning, 5);
 
       expect(status.slotsRemaining).toBe(0);
+      expect(status.maxDailySlots).toBe(5);
+      expect(status.waAccounts).toBe(2);
+    });
+
+    it('supports dynamic maxDailySlots and waAccounts configuration', () => {
+      const wednesdayMorning = new Date('2026-11-04T03:30:00Z');
+      const status = getOperationalWindowStatus(wednesdayMorning, 3, 8, 3);
+
+      expect(status.maxDailySlots).toBe(8);
+      expect(status.slotsRemaining).toBe(5);
+      expect(status.waAccounts).toBe(3);
     });
   });
 

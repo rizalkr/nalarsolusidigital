@@ -103,8 +103,8 @@ describe('siteConfig', () => {
     expect(fullJson).not.toMatch(/Rp|IDR|\b\d{1,3}\.\d{3}\b/);
   });
 
-  it('configures 2 interactive demos with proper badges and CTA labels', () => {
-    expect(siteConfig.demos).toHaveLength(2);
+  it('configures 4 interactive demos with proper badges and CTA labels', () => {
+    expect(siteConfig.demos).toHaveLength(4);
     const demoMap = Object.fromEntries(siteConfig.demos.map((d) => [d.id, d]));
 
     const konveksi = demoMap['ruang-konveksi'];
@@ -122,6 +122,16 @@ describe('siteConfig', () => {
     expect(rental.ctaLabel).toBe('Buka Demo Interaktif');
     expect(rental.features).toContain('Informasi armada');
     expect(rental.features).toContain('Layanan rental');
+
+    const katalog = demoMap['katalog-digital'];
+    expect(katalog).toBeDefined();
+    expect(katalog.badge).toBe('DEMO INTERAKTIF');
+    expect(katalog.title).toBe('Katalog Digital + Pemesanan via WhatsApp');
+
+    const admin = demoMap['sistem-administrasi'];
+    expect(admin).toBeDefined();
+    expect(admin.badge).toBe('DEMO INTERAKTIF');
+    expect(admin.title).toBe('Sistem Administrasi Digital');
   });
 
   it('configures caraKerja section with badge, title, opener, principles, and steps', () => {

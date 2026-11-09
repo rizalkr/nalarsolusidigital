@@ -26,6 +26,7 @@ interface DashboardViewProps {
       maxDailySlots: number;
       slotsRemaining: number;
       currentTimeWIB: string;
+      waAccounts?: number;
     };
     dueLeads: Array<{
       lead: Lead;
@@ -89,6 +90,15 @@ export function DashboardView({ summary }: DashboardViewProps) {
           </div>
 
           <div className="flex items-center gap-4 border-t md:border-t-0 pt-3 md:pt-0 border-border">
+            <div className="text-right sm:border-r sm:border-border sm:pr-4">
+              <span className="text-xs font-medium text-text-secondary block">
+                Jumlah akun WA
+              </span>
+              <span className="text-sm font-bold text-brand-primary">
+                {operationalStatus.waAccounts || 2} akun aktif
+              </span>
+            </div>
+
             <div className="text-right">
               <span className="text-2xl font-black text-brand-primary">
                 {operationalStatus.slotsUsedToday} / {operationalStatus.maxDailySlots}
@@ -96,7 +106,7 @@ export function DashboardView({ summary }: DashboardViewProps) {
               <p className="text-xs text-text-secondary">
                 {operationalStatus.slotsRemaining > 0
                   ? `Tersisa ${operationalStatus.slotsRemaining} kuota hari ini`
-                  : 'Batas kuota 5/5 tercapai'}
+                  : `Batas kuota ${operationalStatus.maxDailySlots}/${operationalStatus.maxDailySlots} tercapai`}
               </p>
             </div>
 

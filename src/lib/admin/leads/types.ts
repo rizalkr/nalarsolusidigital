@@ -70,7 +70,7 @@ export interface Interaction {
 
 export interface AuditLog {
   id: string;
-  lead_id: string;
+  lead_id: string | null;
   aksi: string;
   detail: string | null;
   created_at: string;
@@ -84,6 +84,12 @@ export interface OperationalWindowStatus {
   maxDailySlots: number;
   slotsRemaining: number;
   currentTimeWIB: string;
+  waAccounts: number;
+}
+
+export interface OperationalSettings {
+  maxDailySlots: number;
+  waAccounts: number;
 }
 
 export interface FollowUpDueResult {

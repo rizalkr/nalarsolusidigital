@@ -108,8 +108,8 @@ describe('HomePage (Full Narrative Composition)', () => {
     render(<HomePage />);
 
     const h3Headings = screen.getAllByRole('heading', { level: 3 });
-    // Layanan (8) + Paket Section (1) + Paket Cards (3) + Demos (2) + HowItWorks (3) + Approach (3) + Faq (6) = 26 h3 headings
-    expect(h3Headings).toHaveLength(26);
+    // Layanan (8) + Paket Section (1) + Paket Cards (3) + Demos (4) + HowItWorks (3) + Approach (3) + Faq (6) = 28 h3 headings
+    expect(h3Headings).toHaveLength(28);
 
     const h3Texts = h3Headings.map((h) => h.textContent);
     // Layanan

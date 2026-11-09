@@ -9,7 +9,8 @@ import {
 } from './types';
 import {
   FOLLOW_UP_DAYS,
-  MAX_DAILY_SENDS,
+  DEFAULT_MAX_DAILY_SENDS,
+  DEFAULT_WA_ACCOUNTS,
   OPERATIONAL_HOURS,
 } from './constants';
 import { sanitizePhoneNumber } from '@/lib/whatsapp';
@@ -184,11 +185,13 @@ export function canTransition(
 
 /**
  * Checks current operational window in WIB (Asia/Jakarta).
- * Max 5 sends/day, Monday to Friday, 09:00 - 15:00 WIB.
+ * Max sends/day (defaults to 5) and waAccounts (defaults to 2), Monday to Friday, 09:00 - 15:00 WIB.
  */
 export function getOperationalWindowStatus(
   now: Date = new Date(),
-  slotsUsedToday: number = 0
+  slotsUsedToday: number = 0,
+  maxDailySlots: number = DEFAULT_MAX_DAILY_SENDS,
+  waAccounts: number = DEFAULT_WA_ACCOUNTS
 ): OperationalWindowStatus {
   // Convert date to WIB (UTC+7)
   const formatter = new Intl.DateTimeFormat('en-US', {
@@ -214,7 +217,7 @@ export function getOperationalWindowStatus(
     hour >= OPERATIONAL_HOURS.startHour && hour < OPERATIONAL_HOURS.endHour;
 
   const isInOperationalWindow = isMonToFri && isOperationalHour;
-  const slotsRemaining = Math.max(0, MAX_DAILY_SENDS - slotsUsedToday);
+  const slotsRemaining = Math.max(0, maxDailySlots - slotsUsedToday);
 
   const formattedTime = `${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')} WIB (${weekday})`;
 
@@ -223,9 +226,10 @@ export function getOperationalWindowStatus(
     isOperationalHour,
     isInOperationalWindow,
     slotsUsedToday,
-    maxDailySlots: MAX_DAILY_SENDS,
+    maxDailySlots,
     slotsRemaining,
     currentTimeWIB: formattedTime,
+    waAccounts,
   };
 }
 

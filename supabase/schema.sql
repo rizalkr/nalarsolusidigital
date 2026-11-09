@@ -77,10 +77,17 @@ create table if not exists public.interactions (
 -- 4. Tabel audit_logs
 create table if not exists public.audit_logs (
   id uuid primary key default gen_random_uuid(),
-  lead_id uuid not null references public.leads(id) on delete cascade,
+  lead_id uuid references public.leads(id) on delete cascade,
   aksi text not null,
   detail text,
   created_at timestamptz not null default now()
+);
+
+-- 4b. Tabel settings
+create table if not exists public.settings (
+  key text primary key,
+  value jsonb not null,
+  updated_at timestamptz not null default now()
 );
 
 -- 5. Indexes
@@ -116,11 +123,13 @@ create trigger trg_leads_updated_at
 alter table public.leads enable row level security;
 alter table public.interactions enable row level security;
 alter table public.audit_logs enable row level security;
+alter table public.settings enable row level security;
 
 -- Grant hak akses ke role authenticated
 grant select, insert, update, delete on public.leads to authenticated;
 grant select, insert, update, delete on public.interactions to authenticated;
 grant select, insert, update, delete on public.audit_logs to authenticated;
+grant select, insert, update, delete on public.settings to authenticated;
 
 -- Kebijakan RLS (1 user internal: authenticated user can perform all operations)
 drop policy if exists "Authenticated users full access on leads" on public.leads;
@@ -142,6 +151,14 @@ create policy "Authenticated users full access on interactions"
 drop policy if exists "Authenticated users full access on audit_logs" on public.audit_logs;
 create policy "Authenticated users full access on audit_logs"
   on public.audit_logs
+  for all
+  to authenticated
+  using ((select auth.uid()) is not null)
+  with check ((select auth.uid()) is not null);
+
+drop policy if exists "Authenticated users full access on settings" on public.settings;
+create policy "Authenticated users full access on settings"
+  on public.settings
   for all
   to authenticated
   using ((select auth.uid()) is not null)
